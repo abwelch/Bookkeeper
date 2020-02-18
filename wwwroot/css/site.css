@@ -12,6 +12,10 @@ a {
   color: #0366d6;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -24,10 +28,19 @@ a {
   border-color: #1861ac;
 }
 
+.nav-link:hover {
+    color: white !important;
+    text-decoration: underline;
+}
+
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, .9)' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 @media (min-width: 768px) {
   html {
