@@ -16,6 +16,15 @@ a:hover {
     text-decoration: underline;
 }
 
+a.nav-link {
+    font-size: 17px;
+}
+
+    a.nav-link:hover {
+        color: white !important;
+        text-decoration: underline;
+    }
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -23,14 +32,13 @@ a:hover {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
+  color: white;
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
 
-.nav-link:hover {
+a.dropdown-item:hover {
     color: white !important;
-    text-decoration: underline;
 }
 
 .navbar-dark .navbar-toggler-icon {
