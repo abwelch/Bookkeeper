@@ -13,17 +13,14 @@ namespace Bookkeeper.Controllers
         private readonly UserManager<IdentityUserExtended> userManager;
         private readonly SignInManager<IdentityUserExtended> signInManager;
         private readonly BookkeeperContext dbContext;
-        private readonly IUserInfoUtils userInfoUtils;
 
         public AccountController(UserManager<IdentityUserExtended> _userManager,
             SignInManager<IdentityUserExtended> _signInManager,
-            BookkeeperContext _dbContext,
-            IUserInfoUtils _userInfoUtils)
+            BookkeeperContext _dbContext)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             dbContext = _dbContext;
-            userInfoUtils = _userInfoUtils;
         }
 
         [HttpGet]
