@@ -3,10 +3,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Bookkeeper.Migrations
 {
-    public partial class AddIdentity : Migration
+    public partial class CreateInitialTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Recording");
+
+            migrationBuilder.CreateTable(
+                name: "UserInfos",
+                columns: table => new
+                {
+                    UserID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountCreation = table.Column<DateTime>(type: "date", nullable: false),
+                    LastActivity = table.Column<DateTime>(type: "smalldatetime", nullable: false),
+                    TotalCurrentTransactions = table.Column<int>(nullable: false),
+                    TotalStatements = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserInfos_UserID", x => x.UserID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -39,12 +58,20 @@ namespace Bookkeeper.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    UserInfoID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_UserInfos_UserInfoID",
+                        column: x => x.UserInfoID,
+                        principalTable: "UserInfos",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                }); ;
+            
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -152,6 +179,55 @@ namespace Bookkeeper.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "JournalTransactions",
+                schema: "Recording",
+                columns: table => new
+                {
+                    TransactionID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Memo = table.Column<string>(unicode: false, maxLength: 350, nullable: false),
+                    RecordedDate = table.Column<DateTime>(type: "date", nullable: false),
+                    RecordedTime = table.Column<TimeSpan>(nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "money", nullable: false),
+                    UserID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JournalTransactions_TransactionID", x => x.TransactionID);
+                    table.ForeignKey(
+                        name: "FK_JournalTransactions_UserInfos",
+                        column: x => x.UserID,
+                        principalTable: "UserInfos",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JournalEntries",
+                schema: "Recording",
+                columns: table => new
+                {
+                    EntryID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountName = table.Column<string>(unicode: false, maxLength: 60, nullable: false),
+                    AccountType = table.Column<string>(unicode: false, maxLength: 30, nullable: false),
+                    IsDebit = table.Column<bool>(nullable: false),
+                    Amount = table.Column<decimal>(type: "money", nullable: false),
+                    ParentTransactionID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JournalEntries_EntryID", x => x.EntryID);
+                    table.ForeignKey(
+                        name: "FK_JournalEntries_JournalTransactions",
+                        column: x => x.ParentTransactionID,
+                        principalSchema: "Recording",
+                        principalTable: "JournalTransactions",
+                        principalColumn: "TransactionID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -190,6 +266,18 @@ namespace Bookkeeper.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JournalEntries_ParentTransactionID",
+                schema: "Recording",
+                table: "JournalEntries",
+                column: "ParentTransactionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JournalTransactions_UserID",
+                schema: "Recording",
+                table: "JournalTransactions",
+                column: "UserID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,10 +298,21 @@ namespace Bookkeeper.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "JournalEntries",
+                schema: "Recording");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "JournalTransactions",
+                schema: "Recording");
+
+            migrationBuilder.DropTable(
+                name: "UserInfos");
         }
     }
 }
