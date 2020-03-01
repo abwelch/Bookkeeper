@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Bookkeeper.Models;
 using Microsoft.AspNetCore.Identity;
@@ -9,17 +10,20 @@ namespace Bookkeeper.Controllers
     // This controller processes all account functionality 
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
-        private readonly BookkeeperDbContext db;
+        private readonly UserManager<IdentityUserExtended> userManager;
+        private readonly SignInManager<IdentityUserExtended> signInManager;
+        private readonly BookkeeperContext dbContext;
+        private readonly IUserInfoUtils userInfoUtils;
 
-        public AccountController(UserManager<IdentityUser> _userManager,
-            SignInManager<IdentityUser> _signInManager,
-            BookkeeperDbContext _db)
+        public AccountController(UserManager<IdentityUserExtended> _userManager,
+            SignInManager<IdentityUserExtended> _signInManager,
+            BookkeeperContext _dbContext,
+            IUserInfoUtils _userInfoUtils)
         {
             userManager = _userManager;
             signInManager = _signInManager;
-            db = _db;
+            dbContext = _dbContext;
+            userInfoUtils = _userInfoUtils;
         }
 
         [HttpGet]
@@ -35,10 +39,23 @@ namespace Bookkeeper.Controllers
             {
                 return View(registerInput);
             }
-            IdentityUser newUser = new IdentityUser
+            DateTime currentDateTime = DateTime.Now;
+            UserInfo newUserInfo = new UserInfo
+            {
+                AccountCreation = currentDateTime,
+                LastActivity = currentDateTime,
+                TotalCurrentTransactions = 0,
+                TotalStatements = 0
+            };
+            dbContext.UserInfos.Add(newUserInfo);
+            dbContext.SaveChanges();
+            // EF Core follows the insert and can now retrieve the auto-generated primary key id
+            int newUserID = newUserInfo.UserID;
+            IdentityUserExtended newUser = new IdentityUserExtended
             {
                 UserName = registerInput.Username,
                 Email = registerInput.Email,
+                UserInfoID = newUserID
             };
             // This overload of CreateAsync will automatically hash the password argument
             var result = await userManager.CreateAsync(newUser, registerInput.Password);
