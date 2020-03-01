@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Bookkeeper.Data;
+using Bookkeeper.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Bookkeeper.Data;
 
 namespace Bookkeeper
 {
@@ -24,13 +25,13 @@ namespace Bookkeeper
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<BookkeeperDbContext>(options => 
+            services.AddDbContext<BookkeeperContext>(options => 
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<BookkeeperDbContext>();
+            services.AddIdentity<IdentityUserExtended, IdentityRole>()
+                .AddEntityFrameworkStores<BookkeeperContext>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -44,7 +45,10 @@ namespace Bookkeeper
                 options.SignIn.RequireConfirmedEmail = false;
                 options.SignIn.RequireConfirmedAccount = false;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.User.RequireUniqueEmail = true;
             });
+
+            services.AddTransient<IUserInfoUtils, UserInfoUtils>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
