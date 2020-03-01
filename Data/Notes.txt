@@ -1,0 +1,3 @@
+﻿
+Run this in package manager to generate models based upon table schemas:
+Scaffold-DbContext "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Database=Bookkeeper;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
