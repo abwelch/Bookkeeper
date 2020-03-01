@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bookkeeper.Migrations
 {
-    [DbContext(typeof(BookkeeperDbContext))]
-    partial class BookkeeperDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(BookkeeperContext))]
+    partial class BookkeeperContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,105 @@ namespace Bookkeeper.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Bookkeeper.Models.JournalEntry", b =>
+                {
+                    b.Property<int>("EntryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("EntryID")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AccountName")
+                        .IsRequired()
+                        .HasColumnType("varchar(60)")
+                        .HasMaxLength(60)
+                        .IsUnicode(false);
+
+                    b.Property<string>("AccountType")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)")
+                        .HasMaxLength(30)
+                        .IsUnicode(false);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("money");
+
+                    b.Property<bool>("IsDebit")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ParentTransactionId")
+                        .HasColumnName("ParentTransactionID")
+                        .HasColumnType("int");
+
+                    b.HasKey("EntryId")
+                        .HasName("PK_JournalEntries_EntryID");
+
+                    b.HasIndex("ParentTransactionId");
+
+                    b.ToTable("JournalEntries","Recording");
+                });
+
+            modelBuilder.Entity("Bookkeeper.Models.JournalTransaction", b =>
+                {
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("TransactionID")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Memo")
+                        .IsRequired()
+                        .HasColumnType("varchar(350)")
+                        .HasMaxLength(350)
+                        .IsUnicode(false);
+
+                    b.Property<DateTime>("RecordedDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeSpan>("RecordedTime")
+                        .HasColumnType("time");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("money");
+
+                    b.Property<int>("UserID")
+                        .HasColumnName("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("TransactionId")
+                        .HasName("PK_JournalTransactions_TransactionID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("JournalTransactions","Recording");
+                });
+
+            modelBuilder.Entity("Bookkeeper.Models.UserInfo", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("UserID")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AccountCreation")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("LastActivity")
+                        .HasColumnType("smalldatetime");
+
+                    b.Property<int>("TotalCurrentTransactions")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalStatements")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserID")
+                        .HasName("PK_UserInfos_UserID");
+
+                    b.ToTable("UserInfos");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -213,6 +312,26 @@ namespace Bookkeeper.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Bookkeeper.Models.JournalEntry", b =>
+                {
+                    b.HasOne("Bookkeeper.Models.JournalTransaction", "ParentTransaction")
+                        .WithMany("JournalEntries")
+                        .HasForeignKey("ParentTransactionId")
+                        .HasConstraintName("FK_JournalEntries_JournalTransactions")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Bookkeeper.Models.JournalTransaction", b =>
+                {
+                    b.HasOne("Bookkeeper.Models.UserInfo", "User")
+                        .WithMany("JournalTransactions")
+                        .HasForeignKey("UserID")
+                        .HasConstraintName("FK_JournalTransactions_UserInfos")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
