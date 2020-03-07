@@ -21,24 +21,36 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="">Transactions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="">Subledgers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="">General Journal</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Record Keeping
+                            </a>
+                            <div class="dropdown-menu bg-primary" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item text-light bg-primary" href="#">Overview</a>
+                                <a class="dropdown-item text-light bg-primary" href="#">Journal Entries</a>
+                                <a class="dropdown-item text-light bg-primary" href="#">Posting</a>
+                                <a class="dropdown-item text-light bg-primary" href="#">General Ledger</a>
+                            </div>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Financial Statements
                             </a>
                             <div class="dropdown-menu bg-primary" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item text-light bg-primary" href="#">Overview</a>
                                 <a class="dropdown-item text-light bg-primary" href="#">Balance Sheet</a>
                                 <a class="dropdown-item text-light bg-primary" href="#">Income Statement</a>
                                 <a class="dropdown-item text-light bg-primary" href="#">Statement of Cash Flows</a>
                             </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Help</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">About</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto">
