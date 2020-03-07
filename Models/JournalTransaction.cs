@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace Bookkeeper.Models
 {
+    // Should have been better named but tables already created and too lazy to redo
+    // This class is a "Transaction Header" and is the parent to a number of child JournalEntry objects
     public partial class JournalTransaction
     {
         public JournalTransaction()
