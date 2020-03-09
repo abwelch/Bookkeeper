@@ -18,7 +18,6 @@ namespace Bookkeeper.Models
         public TimeSpan RecordedTime { get; set; }
         public decimal TotalAmount { get; set; }
         public int UserID { get; set; }
-
         public virtual UserInfo User { get; set; }
         public virtual ICollection<JournalEntry> JournalEntries { get; set; }
     }
