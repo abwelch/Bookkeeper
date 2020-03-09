@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Bookkeeper.Models;
 using Bookkeeper.Data;
@@ -12,7 +9,7 @@ namespace Bookkeeper.Controllers
     {
         private readonly BookkeeperContext dbContext;
 
-        public RecordingController(BookkeeperContext _dbContext) 
+        public RecordingController(BookkeeperContext _dbContext)
         {
             dbContext = _dbContext;
         }
@@ -27,12 +24,8 @@ namespace Bookkeeper.Controllers
         {
             TransactionViewModel journal = new TransactionViewModel()
             {
-                JournalHeader = new JournalHeaderViewModel(),
-                JournalLineItem = new JournalLineItemViewModel(),
-                PreviousEntries = new List<JournalLineItemViewModel>(),
+                // Pass current datetime as default value
                 DefaultEntryDate = DateTime.Now,
-                Action = -1,
-                ActionItemIndex = -1
             };
             return View(journal);
         }
@@ -44,15 +37,14 @@ namespace Bookkeeper.Controllers
             {
                 return View(journal);
             }
-            // Determine action to take
-            switch ((JournalAction)journal.Action)
+            // Determine action to take (Values on front-end are abritrarily 100 greater than actual value for remdial measure for tampering
+            switch ((JournalAction)(journal.Action - 100))
             {
                 case JournalAction.AddHeader:
-                    if (journal.JournalHeader == null)
-                    {
-                        return RedirectToAction("Index", "Home");
 
-                    }
+                    return RedirectToAction("Index", "Home");
+
+
                     break;
                 case JournalAction.EditHeader:
 
@@ -72,7 +64,7 @@ namespace Bookkeeper.Controllers
                 default:
                     return RedirectToAction("Index", "Home");
             }
-            
+
 
             return View(journal);
         }
