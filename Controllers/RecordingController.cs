@@ -41,14 +41,9 @@ namespace Bookkeeper.Controllers
             switch ((JournalAction)(journal.Action - 100))
             {
                 case JournalAction.AddHeader:
-
-                    return RedirectToAction("Index", "Home");
-
-
-                    break;
+                    return View(journal);
                 case JournalAction.EditHeader:
-
-                    break;
+                    return View(journal);
                 case JournalAction.AddItem:
 
                     break;
@@ -64,8 +59,6 @@ namespace Bookkeeper.Controllers
                 default:
                     return RedirectToAction("Index", "Home");
             }
-
-
             return View(journal);
         }
     }
