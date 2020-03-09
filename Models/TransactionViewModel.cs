@@ -10,16 +10,12 @@ namespace Bookkeeper.Models
     public class TransactionViewModel
     {
         public JournalHeaderViewModel JournalHeader { get; set; }
-
         public JournalLineItemViewModel JournalLineItem { get; set; }
-
         public List<JournalLineItemViewModel> PreviousEntries { get; set; }
-
         public DateTime DefaultEntryDate { get; set; }
-
         public int Action { get; set; }
-
         public int ActionItemIndex { get; set; } // Index of the list item to process the action on
+        public bool IsTransactionReady { get; set; }
 
         public TransactionViewModel()
         {
@@ -28,16 +24,15 @@ namespace Bookkeeper.Models
             PreviousEntries = new List<JournalLineItemViewModel>();
             Action = -1;
             ActionItemIndex = -1;
+            IsTransactionReady = false;
         }
     }
 
     public class JournalHeaderViewModel
     {
-        [Required]
         [StringLength(350, ErrorMessage = "Memo cannot exceed {1} characters.")]
         public string Memo { get; set; }
 
-        [Required]
         [DataType(DataType.Date)]
         public DateTime RecordedDate { get; set; }
     }
