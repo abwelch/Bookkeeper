@@ -9,17 +9,26 @@ namespace Bookkeeper.Models
     // Class for inputs and redisplaying of prior inputs
     public class TransactionViewModel
     {
-        public JournalHeaderViewModel JournalHeader;
+        public JournalHeaderViewModel JournalHeader { get; set; }
 
-        public JournalLineItemViewModel JournalLineItem;
+        public JournalLineItemViewModel JournalLineItem { get; set; }
 
-        public List<JournalLineItemViewModel> PreviousEntries;
+        public List<JournalLineItemViewModel> PreviousEntries { get; set; }
 
         public DateTime DefaultEntryDate { get; set; }
 
         public int Action { get; set; }
 
         public int ActionItemIndex { get; set; } // Index of the list item to process the action on
+
+        public TransactionViewModel()
+        {
+            JournalHeader = new JournalHeaderViewModel();
+            JournalLineItem = new JournalLineItemViewModel();
+            PreviousEntries = new List<JournalLineItemViewModel>();
+            Action = -1;
+            ActionItemIndex = -1;
+        }
     }
 
     public class JournalHeaderViewModel
