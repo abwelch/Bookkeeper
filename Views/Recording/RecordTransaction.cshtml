@@ -4,7 +4,6 @@
     ViewData["Title"] = "Recording Keeping - Journal";
 }
 
-
 <div class="row">
     <div class="col-10 offset-1 header-wrapper shadow">
         <h1>Record a Transaction</h1>
@@ -15,7 +14,6 @@
 <form asp-controller="Recording" asp-action="RecordTransaction" method="post">
     <div class="row justify-content-center">
         <div class="col-12">
-            <div asp-validation-summary="All" class="text-danger"></div>
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr class="table-primary">
@@ -48,39 +46,61 @@
                     }
                     else
                     {
-                        <!-- Display Journal Header -->
-                        <tr>
-                            <th scope="row">
-                                <input type="datetime" class="form-control" value="@Model.DefaultEntryDate" readonly />
-                            </th>
-                            <td>
-                                <input type="text" class="form-control" style="font-style:italic" readonly />
-                            </td>
-                            <td></td>
-                            <td></td>
-
-                            <td class="table-secondary row-actions" scope="row">
-                                <button type="submit" aria-label="Edit" name="Action" value="101" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit">
-                                    <i class="fas fa-edit fa-lg"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Display Journal line items -->
-                        @if (Model.PreviousEntries != null)
+                        @if (Model.Action == 101)
+                        {
+                            <!-- Edit Journal Header -->
+                            <tr>
+                                <th scope="row">
+                                    <input type="datetime" asp-for="DefaultEntryDate" value="@Model.DefaultEntryDate" class="form-control"/>
+                                </th>
+                                <td>
+                                    <input type="text" asp-for="JournalHeader.Memo" value="@Model.JournalHeader.Memo" class="form-control" style="font-style:italic" />
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td class="table-secondary row-actions" scope="row">
+                                    <button type="submit" aria-label="Add" name="Action" value="100" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                        <i class="fas fa-plus-circle fa-2x"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <!-- Display Journal Header -->
+                            <tr>
+                                <th scope="row">
+                                    <input type="hidden" asp-for="DefaultEntryDate" value="@Model.DefaultEntryDate" class="form-control" readonly />
+                                    <label style="font-weight: normal;">@Model.DefaultEntryDate</label>
+                                </th>
+                                <td>
+                                    <input type="hidden" asp-for="JournalHeader.Memo" value="@Model.JournalHeader.Memo" class="form-control" style="font-style:italic" readonly />
+                                    <label>@Model.JournalHeader.Memo</label>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td class="table-secondary row-actions" scope="row">
+                                    <button type="submit" aria-label="Edit" name="Action" value="101" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit">
+                                        <i class="fas fa-edit fa-lg"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.PreviousEntries.Count > 0)
                         {
                             @foreach (JournalLineItemViewModel item in Model.PreviousEntries)
                             {
-
+                                <!-- Display Journal line items -->
                                 <tr>
                                     <th scope="row">
                                     </th>
                                     <td>
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" />
+                                        <input type="text" class="form-control" />
                                     </td>
                                     <td>
-                                        <input type="number" class="form-control" />
+                                        <input type="text" class="form-control" />
 
                                     </td>
 
@@ -95,49 +115,41 @@
                                 </tr>
                             }
                         }
-                        <!-- Input Journal line item -->
-                        <tr>
-                            <th scope="row">
-                            </th>
-                            <td>
-                                <input type="text" class="form-control" placeholder="Enter Account Title" />
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" placeholder="Enter Amount" />
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" placeholder="Enter Amount" />
+                        @if (Model.Action != 101)
+                        {
+                            <!-- Input Journal line item -->
+                            <tr>
+                                <th scope="row">
+                                </th>
+                                <td>
+                                    <input type="text" class="form-control" placeholder="Enter Account Title" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" placeholder="Enter Amount" />
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" placeholder="Enter Amount" />
 
-                            </td>
-                            <td class="table-secondary row-actions" scope="row">
-                                <button type="submit" aria-label="Add" name="Action" value="102" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
-                                    <i class="fas fa-edit fa-lg"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="table-secondary row-actions" scope="row">
+                                    <button type="submit" aria-label="Add" name="Action" value="102" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                        <i class="fas fa-plus-circle fa-2x"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
         </div>
     </div>
-    @if (Model.PreviousEntries != null)
+    @if (Model.IsTransactionReady)
     {
-        @if (Model.PreviousEntries.Count > 1)
-        {
-            <div class="row">
-                <div class="col text-center">
-                    <button type="submit" name="Action" value="5" class="btn-lg btn-primary">Commit Transaction</button>
-                </div>
+        <div class="row">
+            <div class="col text-center">
+                <button type="submit" name="Action" value="5" class="btn-lg btn-primary">Commit Transaction</button>
             </div>
-        }
-        else
-        {
-            <div class="row">
-                <div class="col text-center">
-                    <button type="submit" name="TransactionFinished" value="true" class="btn-lg btn-secondary" disabled>Commit Transaction</button>
-                </div>
-            </div>
-        }
+        </div>
     }
     else
     {
@@ -147,6 +159,4 @@
             </div>
         </div>
     }
-
 </form>
- 
