@@ -13,8 +13,7 @@ namespace Bookkeeper.Models
         public JournalLineItemViewModel JournalLineItem { get; set; }
         public List<JournalLineItemViewModel> PreviousEntries { get; set; }
         public DateTime DefaultEntryDate { get; set; }
-        public int Action { get; set; }
-        public int ActionItemIndex { get; set; } // Index of the list item to process the action on
+        public string Action { get; set; }
         public bool IsTransactionReady { get; set; }
 
         public TransactionViewModel()
@@ -22,8 +21,7 @@ namespace Bookkeeper.Models
             JournalHeader = new JournalHeaderViewModel();
             JournalLineItem = new JournalLineItemViewModel();
             PreviousEntries = new List<JournalLineItemViewModel>();
-            Action = -1;
-            ActionItemIndex = -1;
+            Action = null;
             IsTransactionReady = false;
         }
     }
@@ -51,13 +49,13 @@ namespace Bookkeeper.Models
         public decimal Amount { get; set; }
     }
 
-    public enum JournalAction
+    public static class JournalAction
     {
-        AddHeader,
-        EditHeader,
-        AddItem,
-        EditItem,
-        DeleteItem,
-        CommitTransaction
+        public const string AddHeader = "AddHeader";
+        public const string EditHeader = "EditHeader";
+        public const string AddItem = "AddItem";
+        public const string EditItem = "EditItem";
+        public const string DeleteItem = "DeleteItem";
+        public const string CommitTransaction = "CommitTransaction";
     }
 }

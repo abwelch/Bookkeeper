@@ -37,8 +37,8 @@ namespace Bookkeeper.Controllers
             {
                 return View(journal);
             }
-            // Determine action to take (Values on front-end are abritrarily 100 greater than actual value for remdial measure for tampering
-            switch ((JournalAction)(journal.Action - 100))
+
+            switch (journal.Action)
             {
                 case JournalAction.AddHeader:
                     return View(journal);
