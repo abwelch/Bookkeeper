@@ -35,7 +35,7 @@ namespace Bookkeeper.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(journal);
+                return RedirectToAction("Index", "Home");
             }
 
             switch (journal.Action)
@@ -45,10 +45,15 @@ namespace Bookkeeper.Controllers
                 case JournalAction.EditHeader:
                     return View(journal);
                 case JournalAction.AddItem:
-
-                    break;
+                    
+                    return View(journal);
                 case JournalAction.EditItem:
-
+                    // Should not occur unless tampered with on client side 
+                    // (could make this more robust in future by adding arbitrary amount to i on front-end before passing)
+                    if (journal.ActionItemIndex >= journal.PreviousEntries.Count || journal.ActionItemIndex < 0)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                     break;
                 case JournalAction.DeleteItem:
 
