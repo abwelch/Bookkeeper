@@ -130,6 +130,7 @@
                                         <button type="submit" aria-label="Delete" name="Action" value="@JournalAction.DeleteItem" class="btn" data-toggle="tooltip" data-placement="right" title="Delete">
                                             <i class="fas fa-trash fa-lg"></i>
                                         </button>
+                                        <input type="hidden" asp-for="ActionItemIndex" value="@i" class="form-control" readonly />
                                     </td>
                                 </tr>
                             }
@@ -141,16 +142,20 @@
                                 <th scope="row">
                                 </th>
                                 <td>
-                                    <input type="text" class="form-control" placeholder="Enter Account Title" />
+                                    <input type="text" id="ItemAccountName" asp-for="JournalLineItem.AccountName" class="form-control" placeholder="Enter Account Title" />
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" placeholder="Enter Amount" />
+                                    <input type="text" id="ItemAmountDebit" asp-for="JournalLineItem.Amount" class="form-control" placeholder="Enter Amount" />
+                                    <input type="hidden" asp-for="JournalLineItem.IsDebit" value="true" class="form-control" readonly />
+
                                 </td>
                                 <td>
-                                    <input type="number" class="form-control" placeholder="Enter Amount" />
+                                    <input type="text" id="ItemAmountCredit" asp-for="JournalLineItem.Amount" class="form-control" placeholder="Enter Amount" />
+                                    <input type="hidden" asp-for="JournalLineItem.IsDebit" value="false" class="form-control" readonly />
+
                                 </td>
                                 <td class="table-secondary row-actions" scope="row">
-                                    <button type="submit" aria-label="Add" name="Action" value="@JournalAction.AddItem" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                    <button type="submit" id="AddItem" name="Action" value="@JournalAction.AddItem" aria-label="Add" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add" onclick="ValidateLineItem()">
                                         <i class="fas fa-plus-circle fa-2x"></i>
                                     </button>
                                 </td>
@@ -183,3 +188,9 @@
         </div>
     }
 </form>
+
+<script src="~/js/site.js"></script>
+
+<script>
+    window.onload = ClearLineItemAmounts;
+</script>
