@@ -1,4 +1,6 @@
-﻿@model Bookkeeper.Models.TransactionViewModel
+﻿@using Bookkeeper.Models
+
+@model Bookkeeper.Models.TransactionViewModel
 
 @{
     ViewData["Title"] = "Recording Keeping - Journal";
@@ -33,25 +35,29 @@
                             </th>
                             <td>
                                 <input type="text" asp-for="JournalHeader.Memo" class="form-control" style="font-style:italic" placeholder="Enter memo for transaction" />
-                                <span asp-validation-for="JournalHeader.Memo" class="text-danger"></span>
                             </td>
                             <td></td>
                             <td></td>
                             <td>
-                                <button type="submit" aria-label="Add" name="Action" value="100" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                <button type="submit" aria-label="Add" name="Action" value="@JournalAction.AddHeader" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
                                     <i class="fas fa-plus-circle fa-2x"></i>
                                 </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span asp-validation-for="JournalHeader.Memo" class="text-danger"></span>
                             </td>
                         </tr>
                     }
                     else
                     {
-                        @if (Model.Action == 101)
+                        @if (Model.Action == JournalAction.EditHeader)
                         {
                             <!-- Edit Journal Header -->
                             <tr>
                                 <th scope="row">
-                                    <input type="datetime" asp-for="DefaultEntryDate" value="@Model.DefaultEntryDate" class="form-control"/>
+                                    <input type="datetime" asp-for="DefaultEntryDate" value="@Model.DefaultEntryDate" class="form-control" />
                                 </th>
                                 <td>
                                     <input type="text" asp-for="JournalHeader.Memo" value="@Model.JournalHeader.Memo" class="form-control" style="font-style:italic" />
@@ -59,7 +65,7 @@
                                 <td></td>
                                 <td></td>
                                 <td class="table-secondary row-actions" scope="row">
-                                    <button type="submit" aria-label="Add" name="Action" value="100" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                    <button type="submit" aria-label="Add" name="Action" value="@JournalAction.AddHeader" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
                                         <i class="fas fa-plus-circle fa-2x"></i>
                                     </button>
                                 </td>
@@ -80,7 +86,7 @@
                                 <td></td>
                                 <td></td>
                                 <td class="table-secondary row-actions" scope="row">
-                                    <button type="submit" aria-label="Edit" name="Action" value="101" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit">
+                                    <button type="submit" aria-label="Edit" name="Action" value="@JournalAction.EditHeader" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit">
                                         <i class="fas fa-edit fa-lg"></i>
                                     </button>
                                 </td>
@@ -88,34 +94,47 @@
                         }
                         @if (Model.PreviousEntries.Count > 0)
                         {
-                            @foreach (JournalLineItemViewModel item in Model.PreviousEntries)
+                            @for (int i = 0; i < Model.PreviousEntries.Count; i++)
                             {
                                 <!-- Display Journal line items -->
                                 <tr>
                                     <th scope="row">
                                     </th>
                                     <td>
+                                        <input type="hidden" asp-for="PreviousEntries[i].AccountName" value="@Model.PreviousEntries[i].AccountName" class="form-control" readonly />
+                                        <label style="font-weight: normal;">@Model.PreviousEntries[i].AccountName</label>
                                     </td>
-                                    <td>
-                                        <input type="text" class="form-control" />
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control" />
-
-                                    </td>
-
+                                    <!-- Determine positioning of amount in row -->
+                                    @if (Model.PreviousEntries[i].IsDebit)
+                                    {
+                                        <td>
+                                            <input type="hidden" asp-for="PreviousEntries[i].Amount" value="@Model.PreviousEntries[i].Amount" class="form-control" readonly />
+                                            <label style="font-weight: normal;">@Model.PreviousEntries[i].Amount</label>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <input type="hidden" asp-for="PreviousEntries[i].Amount" value="@Model.PreviousEntries[i].Amount" class="form-control" readonly />
+                                            <label style="font-weight: normal;">@Model.PreviousEntries[i].Amount</label>
+                                        </td>
+                                    }
                                     <td class="table-secondary row-actions" scope="row">
-                                        <button type="submit" aria-label="Edit" name="Action" value="103" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit">
+                                        <button type="submit" aria-label="Edit" name="Action" value="@JournalAction.EditItem" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit">
                                             <i class="fas fa-edit fa-lg"></i>
                                         </button>
-                                        <button type="submit" aria-label="Delete" name="Action" value="104" class="btn" data-toggle="tooltip" data-placement="right" title="Delete">
+                                        <button type="submit" aria-label="Delete" name="Action" value="@JournalAction.DeleteItem" class="btn" data-toggle="tooltip" data-placement="right" title="Delete">
                                             <i class="fas fa-trash fa-lg"></i>
                                         </button>
                                     </td>
                                 </tr>
                             }
                         }
-                        @if (Model.Action != 101)
+                        @if (Model.Action != JournalAction.EditHeader)
                         {
                             <!-- Input Journal line item -->
                             <tr>
@@ -129,12 +148,16 @@
                                 </td>
                                 <td>
                                     <input type="number" class="form-control" placeholder="Enter Amount" />
-
                                 </td>
                                 <td class="table-secondary row-actions" scope="row">
-                                    <button type="submit" aria-label="Add" name="Action" value="102" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                    <button type="submit" aria-label="Add" name="Action" value="@JournalAction.AddItem" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
                                         <i class="fas fa-plus-circle fa-2x"></i>
                                     </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span asp-validation-for="JournalLineItem.Amount" class="text-danger"></span>
                                 </td>
                             </tr>
                         }
