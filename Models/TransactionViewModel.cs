@@ -14,6 +14,7 @@ namespace Bookkeeper.Models
         public List<JournalLineItemViewModel> PreviousEntries { get; set; }
         public DateTime DefaultEntryDate { get; set; }
         public string Action { get; set; }
+        public int ActionItemIndex { get; set; }
         public bool IsTransactionReady { get; set; }
 
         public TransactionViewModel()
