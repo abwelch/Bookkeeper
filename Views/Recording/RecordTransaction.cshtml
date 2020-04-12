@@ -105,11 +105,11 @@
                                         <label style="font-weight: normal;">@Model.PreviousEntries[i].AccountName</label>
                                     </td>
                                     <!-- Determine positioning of amount in row -->
-                                    @if (Model.PreviousEntries[i].IsDebit)
+                                    @if (Model.PreviousEntries[i].DebitAmount != null)
                                     {
                                         <td>
-                                            <input type="hidden" asp-for="PreviousEntries[i].Amount" value="@Model.PreviousEntries[i].Amount" class="form-control" readonly />
-                                            <label style="font-weight: normal;">@Model.PreviousEntries[i].Amount</label>
+                                            <input type="hidden" asp-for="PreviousEntries[i].DebitAmount" value="@Model.PreviousEntries[i].DebitAmount" class="form-control" readonly />
+                                            <label style="font-weight: normal;">@Model.PreviousEntries[i].DebitAmount</label>
                                         </td>
                                         <td>
                                         </td>
@@ -119,8 +119,8 @@
                                         <td>
                                         </td>
                                         <td>
-                                            <input type="hidden" asp-for="PreviousEntries[i].Amount" value="@Model.PreviousEntries[i].Amount" class="form-control" readonly />
-                                            <label style="font-weight: normal;">@Model.PreviousEntries[i].Amount</label>
+                                            <input type="hidden" asp-for="PreviousEntries[i].CreditAmount" value="@Model.PreviousEntries[i].CreditAmount" class="form-control" readonly />
+                                            <label style="font-weight: normal;">@Model.PreviousEntries[i].CreditAmount</label>
                                         </td>
                                     }
                                     <td class="table-secondary row-actions" scope="row">
@@ -145,14 +145,11 @@
                                     <input type="text" id="ItemAccountName" asp-for="JournalLineItem.AccountName" class="form-control" placeholder="Enter Account Title" />
                                 </td>
                                 <td>
-                                    <input type="text" id="ItemAmountDebit" asp-for="JournalLineItem.Amount" class="form-control" placeholder="Enter Amount" />
-                                    <input type="hidden" asp-for="JournalLineItem.IsDebit" value="true" class="form-control" readonly />
+                                    <input type="text" id="ItemAmountDebit" asp-for="JournalLineItem.DebitAmount" class="form-control" placeholder="Enter Amount" />
 
                                 </td>
                                 <td>
-                                    <input type="text" id="ItemAmountCredit" asp-for="JournalLineItem.Amount" class="form-control" placeholder="Enter Amount" />
-                                    <input type="hidden" asp-for="JournalLineItem.IsDebit" value="false" class="form-control" readonly />
-
+                                    <input type="text" id="ItemAmountCredit" asp-for="JournalLineItem.CreditAmount" class="form-control" placeholder="Enter Amount" />
                                 </td>
                                 <td class="table-secondary row-actions" scope="row">
                                     <button type="submit" id="AddItem" name="Action" value="@JournalAction.AddItem" aria-label="Add" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add" onclick="ValidateLineItem()">
@@ -162,7 +159,8 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <span asp-validation-for="JournalLineItem.Amount" class="text-danger"></span>
+                                    <span asp-validation-for="JournalLineItem.DebitAmount" class="text-danger"></span>
+                                    <span asp-validation-for="JournalLineItem.CreditAmount" class="text-danger"></span>
                                 </td>
                             </tr>
                         }
