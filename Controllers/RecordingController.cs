@@ -35,7 +35,7 @@ namespace Bookkeeper.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Index", "Home");
+                return View(journal);
             }
 
             switch (journal.Action)
@@ -45,7 +45,13 @@ namespace Bookkeeper.Controllers
                 case JournalAction.EditHeader:
                     return View(journal);
                 case JournalAction.AddItem:
-                    
+                    // Check that journalLineitem exists and that debit/credit amounts do not both contian values and do not both contain nothing
+                    if (journal.JournalLineItem != null 
+                        && !(journal.JournalLineItem.DebitAmount != null && journal.JournalLineItem.CreditAmount != null) 
+                        && !(journal.JournalLineItem.DebitAmount == null && journal.JournalLineItem.CreditAmount == null))
+                    {
+                        journal.PreviousEntries.Add(journal.JournalLineItem);
+                    }
                     return View(journal);
                 case JournalAction.EditItem:
                     // Should not occur unless tampered with on client side 
