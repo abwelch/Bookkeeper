@@ -43,11 +43,13 @@ namespace Bookkeeper.Models
 
         public string AccountType { get; set; }
 
-        public bool IsDebit { get; set; }
+        [DataType(DataType.Currency)]
+        [Range(0, 9999999999.99)]
+        public decimal? DebitAmount { get; set; }
 
         [DataType(DataType.Currency)]
-        [Range(0, 99999999999.99)]
-        public decimal Amount { get; set; }
+        [Range(0, 9999999999.99)]
+        public decimal? CreditAmount { get; set; }
     }
 
     public static class JournalAction
