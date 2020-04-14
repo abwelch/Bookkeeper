@@ -112,7 +112,15 @@
                                         <th scope="row">
                                         </th>
                                         <td>
-                                            <input type="text" id="EditItemAccountName" asp-for="PreviousEntries[i].AccountName" value="@Model.PreviousEntries[i].AccountName" class="form-control" />
+                                            <div class="form-group">
+                                                <select class="form-control" asp-for="PreviousEntries[i].AccountName">
+                                                    <option value="@Model.PreviousEntries[i].AccountName" selected>@Model.PreviousEntries[i].AccountName</option>
+                                                    @foreach (string account in AccountsInfo.AccountNames)
+                                                    {
+                                                        <option value="@account">@account</option>
+                                                    }
+                                                </select>
+                                            </div>
                                         </td>
                                         <td>
                                             <input type="text" id="EditItemAmountDebit" asp-for="PreviousEntries[i].DebitAmount" value="@Model.PreviousEntries[i].DebitAmount" class="form-control" />
@@ -177,7 +185,15 @@
                                 <th scope="row">
                                 </th>
                                 <td>
-                                    <input type="text" id="ItemAccountName" asp-for="JournalLineItem.AccountName" class="form-control" placeholder="Enter Account Title" />
+                                    <div class="form-group">
+                                        <select id="ItemAccountName" class="form-control" asp-for="JournalLineItem.AccountName">
+                                            <option value="" disabled selected>Choose an account</option>
+                                            @foreach (string account in AccountsInfo.AccountNames)
+                                            {
+                                                <option value="@account">@account</option>
+                                            }
+                                        </select>
+                                    </div>
                                 </td>
                                 <td>
                                     <input type="text" id="ItemAmountDebit" asp-for="JournalLineItem.DebitAmount" class="form-control" placeholder="Enter Amount" />
