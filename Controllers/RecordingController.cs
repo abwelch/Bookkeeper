@@ -2,16 +2,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Bookkeeper.Models;
 using Bookkeeper.Data;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace Bookkeeper.Controllers
 {
     public class RecordingController : Controller
     {
         private readonly BookkeeperContext dbContext;
-
-        public RecordingController(BookkeeperContext _dbContext)
+        private readonly UserManager<IdentityUserExtended> userManager;
+        private readonly ITransactionUtils transactionUtils;
+        public RecordingController(BookkeeperContext _dbContext, ITransactionUtils _transactionUtils,
+            UserManager<IdentityUserExtended> _userManager)
         {
             dbContext = _dbContext;
+            transactionUtils = _transactionUtils;
+            userManager = _userManager;
         }
 
         public IActionResult Index()
@@ -31,13 +37,17 @@ namespace Bookkeeper.Controllers
         }
 
         [HttpPost]
-        public IActionResult RecordTransaction(TransactionViewModel journal)
+        public async Task<IActionResult> RecordTransactionAsync(TransactionViewModel journal)
         {
             if (!ModelState.IsValid)
             {
                 return View(journal);
             }
-
+            IdentityUserExtended currentUser = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                currentUser = await userManager.GetUserAsync(User);
+            }
             switch (journal.Action)
             {
                 case JournalAction.AddHeader:
@@ -48,29 +58,60 @@ namespace Bookkeeper.Controllers
                     // Check that journalLineitem exists and that debit/credit amounts do not both contian values and do not both contain nothing
                     if (journal.JournalLineItem != null 
                         && !(journal.JournalLineItem.DebitAmount != null && journal.JournalLineItem.CreditAmount != null) 
-                        && !(journal.JournalLineItem.DebitAmount == null && journal.JournalLineItem.CreditAmount == null))
+                        && !(journal.JournalLineItem.DebitAmount == null && journal.JournalLineItem.CreditAmount == null)
+                        && journal.JournalLineItem.AccountName != null)
                     {
                         journal.PreviousEntries.Add(journal.JournalLineItem);
                     }
                     return View(journal);
                 case JournalAction.EditItem:
-                    // Should not occur unless tampered with on client side 
-                    // (could make this more robust in future by adding arbitrary amount to i on front-end before passing)
-                    if (journal.ActionItemIndex >= journal.PreviousEntries.Count || journal.ActionItemIndex < 0)
                     {
-                        return RedirectToAction("Index", "Home");
+                        // Should not occur unless tampered with on client side 
+                        // (could make this more robust in future by adding arbitrary amount to i on front-end before passing)
+                        int index = -1;
+                        for (int i = 0; i < journal.PreviousEntries.Count; ++i)
+                        {
+                            if (journal.PreviousEntries[i].ActionItemIndex == 111)
+                            {
+                                index = i;
+                            }
+                        }
+                        if (index == -1)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+
+                        return View(journal);
                     }
-                    break;
+                case JournalAction.CompleteEdit:
+                    return View(journal);
                 case JournalAction.DeleteItem:
-
-                    break;
+                    {
+                        int index = -1;
+                        for (int i = 0; i < journal.PreviousEntries.Count; ++i)
+                        {
+                            if (journal.PreviousEntries[i].ActionItemIndex == 111)
+                            {
+                                index = i;
+                            }
+                        }
+                        if (index == -1)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        journal.PreviousEntries.RemoveAt(index);
+                        return View(journal);
+                    }
                 case JournalAction.CommitTransaction:
-
-                    break;
+                    journal.UserID = (currentUser != null) ? currentUser.UserInfoID : 0;
+                    if (transactionUtils.CommitTransaction(journal))
+                    {
+                        return View("TransactionCommitted");
+                    }
+                    return View(journal);
                 default:
                     return RedirectToAction("Index", "Home");
             }
-            return View(journal);
         }
     }
 }
