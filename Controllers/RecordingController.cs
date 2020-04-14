@@ -55,16 +55,19 @@ namespace Bookkeeper.Controllers
                 case JournalAction.EditHeader:
                     return View(journal);
                 case JournalAction.AddItem:
+                    #region [ Add Item ]
                     // Check that journalLineitem exists and that debit/credit amounts do not both contian values and do not both contain nothing
-                    if (journal.JournalLineItem != null 
-                        && !(journal.JournalLineItem.DebitAmount != null && journal.JournalLineItem.CreditAmount != null) 
+                    if (journal.JournalLineItem != null
+                        && !(journal.JournalLineItem.DebitAmount != null && journal.JournalLineItem.CreditAmount != null)
                         && !(journal.JournalLineItem.DebitAmount == null && journal.JournalLineItem.CreditAmount == null)
                         && journal.JournalLineItem.AccountName != null)
                     {
                         journal.PreviousEntries.Add(journal.JournalLineItem);
                     }
                     return View(journal);
+                #endregion [ Add Item ]
                 case JournalAction.EditItem:
+                    #region [ Edit Item ]
                     {
                         // Should not occur unless tampered with on client side 
                         // (could make this more robust in future by adding arbitrary amount to i on front-end before passing)
@@ -83,9 +86,11 @@ namespace Bookkeeper.Controllers
 
                         return View(journal);
                     }
+                #endregion [ Edit Item ]
                 case JournalAction.CompleteEdit:
                     return View(journal);
                 case JournalAction.DeleteItem:
+                    #region [ Delete item ]
                     {
                         int index = -1;
                         for (int i = 0; i < journal.PreviousEntries.Count; ++i)
@@ -102,16 +107,25 @@ namespace Bookkeeper.Controllers
                         journal.PreviousEntries.RemoveAt(index);
                         return View(journal);
                     }
+                #endregion [ Delete item ]
                 case JournalAction.CommitTransaction:
+                    #region [ Commit Transaction ]
                     journal.UserID = (currentUser != null) ? currentUser.UserInfoID : 0;
                     if (transactionUtils.CommitTransaction(journal))
                     {
-                        return View("TransactionCommitted");
+                        return RedirectToAction("TransactionCommitted", journal);
                     }
-                    return View(journal);
+                    return RedirectToAction("Index", "Home");
+                    #endregion [ Commit Transaction ]
                 default:
                     return RedirectToAction("Index", "Home");
             }
+        }
+
+        public IActionResult TransactionCommitted(TransactionViewModel journal)
+        {
+
+            return View();
         }
     }
 }
