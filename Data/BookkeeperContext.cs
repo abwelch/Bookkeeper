@@ -38,11 +38,6 @@ namespace Bookkeeper.Data
                     .HasMaxLength(60)
                     .IsUnicode(false);
 
-                entity.Property(e => e.AccountType)
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.DebitAmount).HasColumnType("money");
                 entity.Property(e => e.CreditAmount).HasColumnType("money");
 
