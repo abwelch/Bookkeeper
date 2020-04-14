@@ -50,7 +50,7 @@ namespace Bookkeeper.Models
             decimal? total = 0;
             foreach (JournalLineItemViewModel lineItem in transaction.PreviousEntries)
             {
-                total += lineItem.DebitAmount;
+                total += (lineItem.DebitAmount != null) ? lineItem.DebitAmount : 0;
             }
             JournalTransaction transactionEntry = new JournalTransaction()
             {
@@ -58,13 +58,36 @@ namespace Bookkeeper.Models
                 RecordedDate = transaction.JournalHeader.RecordedDate,
                 RecordedTime = transaction.JournalHeader.RecordedDate.TimeOfDay,
                 TotalAmount = (decimal)total,
-                UserID = transaction.UserID 
+                UserID = transaction.UserID
             };
-            dbContext.JournalTransactions.Add(transactionEntry);
-
+            try
+            {
+                dbContext.JournalTransactions.Add(transactionEntry);
+            }
+            catch
+            {
+                return false;
+            }
+            foreach (JournalLineItemViewModel lineItem in transaction.PreviousEntries)
+            {
+                JournalEntry entry = new JournalEntry()
+                {
+                    AccountName = lineItem.AccountName,
+                    DebitBalance = AccountsInfo.DebitAccounts.Contains(lineItem.AccountName),
+                    DebitAmount = lineItem.DebitAmount,
+                    CreditAmount = lineItem.CreditAmount,
+                    ParentTransactionId = transaction.UserID
+                };
+                try
+                {
+                    dbContext.JournalEntries.Add(entry);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
             return true;
         }
-
-
     }
 }
