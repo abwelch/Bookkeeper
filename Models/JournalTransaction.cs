@@ -14,8 +14,7 @@ namespace Bookkeeper.Models
 
         public int TransactionId { get; set; }
         public string Memo { get; set; }
-        public DateTime RecordedDate { get; set; }
-        public TimeSpan RecordedTime { get; set; }
+        public string RecordedDateTime { get; set; }
         public decimal TotalAmount { get; set; }
         public int UserID { get; set; }
         public virtual UserInfo User { get; set; }
