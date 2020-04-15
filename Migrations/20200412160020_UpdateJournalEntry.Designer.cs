@@ -4,14 +4,16 @@ using Bookkeeper.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bookkeeper.Migrations
 {
     [DbContext(typeof(BookkeeperContext))]
-    partial class BookkeeperContextModelSnapshot : ModelSnapshot
+    [Migration("20200412160020_UpdateJournalEntry")]
+    partial class UpdateJournalEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,14 +103,17 @@ namespace Bookkeeper.Migrations
                         .HasMaxLength(60)
                         .IsUnicode(false);
 
-                    b.Property<decimal?>("CreditAmount")
+                    b.Property<string>("AccountType")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)")
+                        .HasMaxLength(30)
+                        .IsUnicode(false);
+
+                    b.Property<decimal>("CreditAmount")
                         .HasColumnType("money");
 
-                    b.Property<decimal?>("DebitAmount")
+                    b.Property<decimal>("DebitAmount")
                         .HasColumnType("money");
-
-                    b.Property<bool>("DebitBalance")
-                        .HasColumnType("bit");
 
                     b.Property<int>("ParentTransactionId")
                         .HasColumnName("ParentTransactionID")
@@ -136,8 +141,11 @@ namespace Bookkeeper.Migrations
                         .HasMaxLength(350)
                         .IsUnicode(false);
 
-                    b.Property<string>("RecordedDateTime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("RecordedDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeSpan>("RecordedTime")
+                        .HasColumnType("time");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("money");

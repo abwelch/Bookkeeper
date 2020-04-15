@@ -4,8 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Bookkeeper</title>
+    <link href="~/css/site.css" rel="stylesheet" type="text/css" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://kit.fontawesome.com/8d4654250c.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
@@ -21,24 +22,36 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="">Transactions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="">Subledgers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="">General Journal</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Record Keeping
+                            </a>
+                            <div class="dropdown-menu bg-primary" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Overview</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="Recording" asp-action="RecordTransaction">Record a Transaction</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Posting</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">General Ledger</a>
+                            </div>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Financial Statements
                             </a>
                             <div class="dropdown-menu bg-primary" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item text-light bg-primary" href="#">Balance Sheet</a>
-                                <a class="dropdown-item text-light bg-primary" href="#">Income Statement</a>
-                                <a class="dropdown-item text-light bg-primary" href="#">Statement of Cash Flows</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Overview</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Balance Sheet</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Income Statement</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Statement of Cash Flows</a>
                             </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Help</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">About</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto">
@@ -73,9 +86,10 @@
             Bookkeeper - Developed by Andrew Welch
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

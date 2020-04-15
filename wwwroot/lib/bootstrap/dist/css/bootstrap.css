@@ -9900,10 +9900,6 @@ a.text-danger:hover, a.text-danger:focus {
   color: #f8f9fa !important;
 }
 
-a.text-light:hover, a.text-light:focus {
-  color: #cbd3da !important;
-}
-
 .text-dark {
   color: #343a40 !important;
 }

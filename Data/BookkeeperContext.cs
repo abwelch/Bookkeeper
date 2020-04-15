@@ -17,9 +17,9 @@ namespace Bookkeeper.Data
         {
         }
 
-        public virtual DbSet<JournalEntry> JournalEntries { get; set; }
-        public virtual DbSet<JournalTransaction> JournalTransactions { get; set; }
-        public virtual DbSet<UserInfo> UserInfos { get; set; }
+        public DbSet<JournalEntry> JournalEntries { get; set; }
+        public DbSet<JournalTransaction> JournalTransactions { get; set; }
+        public DbSet<UserInfo> UserInfos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,12 +38,8 @@ namespace Bookkeeper.Data
                     .HasMaxLength(60)
                     .IsUnicode(false);
 
-                entity.Property(e => e.AccountType)
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Amount).HasColumnType("money");
+                entity.Property(e => e.DebitAmount).HasColumnType("money");
+                entity.Property(e => e.CreditAmount).HasColumnType("money");
 
                 entity.Property(e => e.ParentTransactionId).HasColumnName("ParentTransactionID");
 
@@ -66,8 +62,6 @@ namespace Bookkeeper.Data
                     .IsRequired()
                     .HasMaxLength(350)
                     .IsUnicode(false);
-
-                entity.Property(e => e.RecordedDate).HasColumnType("date");
 
                 entity.Property(e => e.TotalAmount).HasColumnType("money");
 

@@ -1,0 +1,245 @@
+﻿@using Bookkeeper.Models
+@inject ITransactionUtils Utilities
+@model Bookkeeper.Models.TransactionViewModel
+
+@{
+    ViewData["Title"] = "Recording Keeping - Journal";
+}
+
+<div class="row">
+    <div class="col-10 offset-1 header-wrapper shadow">
+        <h1>Record a Transaction</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-10 offset-1 text-center">
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <p class="text-danger">Warning: You are not logged in and will be unable to commit transactions</p>
+        }
+    </div>
+</div>
+<br />
+<br />
+<form asp-controller="Recording" asp-action="RecordTransaction" method="post">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Date & Time</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Debit</th>
+                        <th scope="col">Credit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.JournalHeader.Memo == null)
+                    {
+                        <!-- Input Journal Header -->
+                        <tr>
+                            <th scope="row">
+                                <input type="datetime" asp-for="DefaultEntryDate" value="@Model.DefaultEntryDate" class="form-control" />
+                            </th>
+                            <td>
+                                <input type="text" asp-for="JournalHeader.Memo" class="form-control" style="font-style:italic" placeholder="Enter memo for transaction" />
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button type="submit" aria-label="Add" name="Action" value="@JournalAction.AddHeader" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                    <i class="fas fa-plus-circle fa-2x"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span asp-validation-for="JournalHeader.Memo" class="text-danger"></span>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @if (Model.Action == JournalAction.EditHeader)
+                        {
+                            <!-- Edit Journal Header -->
+                            <tr>
+                                <th scope="row">
+                                    <input type="datetime" asp-for="DefaultEntryDate" value="@Model.DefaultEntryDate" class="form-control" />
+                                </th>
+                                <td>
+                                    <input type="text" asp-for="JournalHeader.Memo" value="@Model.JournalHeader.Memo" class="form-control" style="font-style:italic" />
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td class="table-secondary row-actions" scope="row">
+                                    <button type="submit" aria-label="Add" name="Action" value="@JournalAction.AddHeader" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add">
+                                        <i class="fas fa-plus-circle fa-2x"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <!-- Display Journal Header -->
+                            <tr>
+                                <th scope="row">
+                                    <input type="hidden" asp-for="DefaultEntryDate" value="@Model.DefaultEntryDate" class="form-control" readonly />
+                                    <label style="font-weight: normal;">@Model.DefaultEntryDate</label>
+                                </th>
+                                <td>
+                                    <input type="hidden" asp-for="JournalHeader.Memo" value="@Model.JournalHeader.Memo" class="form-control" style="font-style:italic" readonly />
+                                    <label>@Model.JournalHeader.Memo</label>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td class="table-secondary row-actions" scope="row">
+                                    <button type="submit" aria-label="Edit" name="Action" value="@JournalAction.EditHeader" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit">
+                                        <i class="fas fa-edit fa-lg"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.PreviousEntries.Count > 0)
+                        {
+                            @for (int i = 0; i < Model.PreviousEntries.Count; i++)
+                            {
+                                @if (Model.Action == JournalAction.EditItem && Model.PreviousEntries[i].ActionItemIndex != 0)
+                                {
+                                    <!-- Display Journal line item to edit -->
+
+                                    <tr>
+                                        <th scope="row">
+                                        </th>
+                                        <td>
+                                            <div class="form-group">
+                                                <select class="form-control" asp-for="PreviousEntries[i].AccountName">
+                                                    <option value="@Model.PreviousEntries[i].AccountName" selected>@Model.PreviousEntries[i].AccountName</option>
+                                                    @foreach (string account in AccountsInfo.AccountNames)
+                                                    {
+                                                        <option value="@account">@account</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="EditItemAmountDebit" asp-for="PreviousEntries[i].DebitAmount" value="@Model.PreviousEntries[i].DebitAmount" class="form-control" />
+                                        </td>
+                                        <td>
+                                            <input type="text" id="EditItemAmountCredit" asp-for="PreviousEntries[i].CreditAmount" value="@Model.PreviousEntries[i].CreditAmount" class="form-control" />
+                                        </td>
+                                        <td class="table-secondary row-actions" scope="row">
+                                            <button type="submit" id="AddItem" name="Action" value="@JournalAction.CompleteEdit" aria-label="Add" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add" onclick="ValidateEditLineItem()">
+                                                <i class="fas fa-plus-circle fa-2x"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <!-- Display Journal line items -->
+                                    <tr>
+                                        <th scope="row">
+                                        </th>
+                                        <td>
+                                            <input type="hidden" asp-for="PreviousEntries[i].AccountName" value="@Model.PreviousEntries[i].AccountName" class="form-control" readonly />
+                                            <label style="font-weight: normal;">@Model.PreviousEntries[i].AccountName</label>
+                                        </td>
+                                        <!-- Determine positioning of amount in row -->
+                                        @if (Model.PreviousEntries[i].DebitAmount != null)
+                                        {
+                                            <td>
+                                                <input type="hidden" asp-for="PreviousEntries[i].DebitAmount" value="@Model.PreviousEntries[i].DebitAmount" class="form-control" readonly />
+                                                <label style="font-weight: normal;">@Model.PreviousEntries[i].DebitAmount</label>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                            </td>
+                                            <td>
+                                                <input type="hidden" asp-for="PreviousEntries[i].CreditAmount" value="@Model.PreviousEntries[i].CreditAmount" class="form-control" readonly />
+                                                <label style="font-weight: normal;">@Model.PreviousEntries[i].CreditAmount</label>
+                                            </td>
+                                        }
+                                        <td class="table-secondary row-actions" scope="row">
+                                            <button type="submit" aria-label="Edit" name="Action" value="@JournalAction.EditItem" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit" onclick="SetActionItemIndex(document.getElementById(@i.ToString()))">
+                                                <i class="fas fa-edit fa-lg"></i>
+                                            </button>
+                                            <button type="submit" aria-label="Delete" name="Action" value="@JournalAction.DeleteItem" class="btn" data-toggle="tooltip" data-placement="right" title="Delete" onclick="SetActionItemIndex(document.getElementById(@i.ToString()))">
+                                                <i class="fas fa-trash fa-lg"></i>
+                                            </button>
+                                            <input type="hidden" id="@i.ToString()" asp-for="PreviousEntries[i].ActionItemIndex" value="0" class="form-control" readonly />
+                                        </td>
+                                    </tr>
+                                }
+
+                            }
+                        }
+                        @if (Model.Action != JournalAction.EditHeader && Model.Action != JournalAction.EditItem)
+                        {
+                            <!-- Input Journal line item -->
+                            <tr>
+                                <th scope="row">
+                                </th>
+                                <td>
+                                    <div class="form-group">
+                                        <select id="ItemAccountName" class="form-control" asp-for="JournalLineItem.AccountName">
+                                            <option value="" disabled selected>Choose an account</option>
+                                            @foreach (string account in AccountsInfo.AccountNames)
+                                            {
+                                                <option value="@account">@account</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" id="ItemAmountDebit" asp-for="JournalLineItem.DebitAmount" class="form-control" placeholder="Enter Amount" />
+
+                                </td>
+                                <td>
+                                    <input type="text" id="ItemAmountCredit" asp-for="JournalLineItem.CreditAmount" class="form-control" placeholder="Enter Amount" />
+                                </td>
+                                <td class="table-secondary row-actions" scope="row">
+                                    <button type="submit" id="AddItem" name="Action" value="@JournalAction.AddItem" aria-label="Add" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Add" onclick="ValidateLineItem()">
+                                        <i class="fas fa-plus-circle fa-2x"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span asp-validation-for="JournalLineItem.DebitAmount" class="text-danger"></span>
+                                    <span asp-validation-for="JournalLineItem.CreditAmount" class="text-danger"></span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @if (Utilities.ValidateTransaction(Model) && User.Identity.IsAuthenticated)
+    {
+        <div class="row">
+            <div class="col text-center">
+                <button type="submit" name="Action" value="@JournalAction.CommitTransaction" class="btn-lg btn-primary">Commit Transaction</button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col text-center">
+                <button type="button" name="TransactionFinished" value="true" class="btn-lg btn-secondary" disabled>Commit Transaction</button>
+            </div>
+        </div>
+    }
+</form>
+
+<script src="~/js/site.js"></script>
+
+<script>
+    window.onload = ClearLineItemAmounts;
+</script>

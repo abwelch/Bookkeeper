@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Bookkeeper.Data;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Bookkeeper
 {
@@ -25,9 +27,10 @@ namespace Bookkeeper
         {
             services.AddControllersWithViews();
 
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<BookkeeperContext>(options => 
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
             });
 
             services.AddIdentity<IdentityUserExtended, IdentityRole>()
@@ -48,7 +51,11 @@ namespace Bookkeeper
                 options.User.RequireUniqueEmail = true;
             });
 
+            // Inject IDbConnection, with implementation from SqlConnection class.
+            services.AddTransient<IDbConnection>((sp) => new SqlConnection(connectionString));
+
             services.AddTransient<IUserInfoUtils, UserInfoUtils>();
+            services.AddTransient<ITransactionUtils, TransactionUtils>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
