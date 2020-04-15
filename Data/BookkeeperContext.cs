@@ -63,8 +63,6 @@ namespace Bookkeeper.Data
                     .HasMaxLength(350)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RecordedDate).HasColumnType("date");
-
                 entity.Property(e => e.TotalAmount).HasColumnType("money");
 
                 entity.Property(e => e.UserID).HasColumnName("UserID");
