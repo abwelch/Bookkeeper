@@ -1,7 +1,77 @@
-﻿
+﻿@model Bookkeeper.Models.TransactionSummaryViewModel
+
 @{
     ViewData["Title"] = "TransactionCommitted";
 }
 
-<h1>TransactionCommitted</h1>
+<div class="row">
+    <div class="col text-center">
+        <h1 class="display-4">Transaction Successfully Committed</h1>
+    </div>
+</div>
 
+<div class="row justify-content-center">
+    <div class="col-12">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="table-primary">
+                    <th scope="col">Date & Time</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Debit</th>
+                    <th scope="col">Credit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Display Journal Header -->
+                <tr>
+                    <th scope="row">
+                        <label style="font-weight: normal;">@Model.JournalHeader.RecordedDateTime</label>
+                    </th>
+                    <td>
+                        <label>@Model.JournalHeader.Memo</label>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                <!-- Display Journal line items -->
+                @for (int i = 0; i < Model.LineItems.Count; ++i)
+                {
+                    <tr>
+                        <th scope="row">
+                        </th>
+                        <td>
+                            <label style="font-weight: normal;">@Model.LineItems[i].AccountName</label>
+                        </td>
+                        <!-- Determine positioning of amount in row -->
+                        @if (Model.LineItems[i].DebitAmount != null)
+                        {
+                            <td>
+                                <label style="font-weight: normal;">@Model.LineItems[i].DebitAmount</label>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                            </td>
+                            <td>
+                                <label style="font-weight: normal;">@Model.LineItems[i].CreditAmount</label>
+                            </td>
+                        }
+                    </tr>
+                }
+                <!-- Display totals row -->
+                <tr>
+                    <th scope="row"></th>
+                    <td></td>
+                    <td>
+                        <label style="font-weight: bolder;">@Model.JournalHeader.TotalAmount</label>
+                    </td>
+                    <td>
+                        <label style="font-weight: bolder;">@Model.JournalHeader.TotalAmount</label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
