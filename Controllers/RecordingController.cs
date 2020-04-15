@@ -111,21 +111,26 @@ namespace Bookkeeper.Controllers
                 case JournalAction.CommitTransaction:
                     #region [ Commit Transaction ]
                     journal.UserID = (currentUser != null) ? currentUser.UserInfoID : 0;
-                    if (transactionUtils.CommitTransaction(journal))
+                    int transactionID = transactionUtils.CommitTransaction(journal);
+                    if (transactionID != -1)
                     {
-                        return RedirectToAction("TransactionCommitted", journal);
+                        return RedirectToAction("TransactionCommitted", new { tranID = transactionID });
                     }
                     return RedirectToAction("Index", "Home");
-                    #endregion [ Commit Transaction ]
+                #endregion [ Commit Transaction ]
                 default:
                     return RedirectToAction("Index", "Home");
             }
         }
 
-        public IActionResult TransactionCommitted(TransactionViewModel journal)
+        public IActionResult TransactionCommitted(int tranID)
         {
-
-            return View();
+            TransactionSummaryViewModel summary = transactionUtils.RetrieveLastUserCommitSummary(tranID);
+            if (summary == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View(summary);
         }
     }
 }
