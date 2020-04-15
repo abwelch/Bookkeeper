@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Bookkeeper.Data;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace Bookkeeper
 {
@@ -25,9 +27,10 @@ namespace Bookkeeper
         {
             services.AddControllersWithViews();
 
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<BookkeeperContext>(options => 
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
             });
 
             services.AddIdentity<IdentityUserExtended, IdentityRole>()
@@ -47,6 +50,9 @@ namespace Bookkeeper
                 options.SignIn.RequireConfirmedPhoneNumber = false;
                 options.User.RequireUniqueEmail = true;
             });
+
+            // Inject IDbConnection, with implementation from SqlConnection class.
+            services.AddTransient<IDbConnection>((sp) => new SqlConnection(connectionString));
 
             services.AddTransient<IUserInfoUtils, UserInfoUtils>();
             services.AddTransient<ITransactionUtils, TransactionUtils>();
