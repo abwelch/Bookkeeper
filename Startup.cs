@@ -54,8 +54,10 @@ namespace Bookkeeper
             // Inject IDbConnection, with implementation from SqlConnection class.
             services.AddTransient<IDbConnection>((sp) => new SqlConnection(connectionString));
 
+            // Inject custom dependencies
             services.AddTransient<IUserInfoUtils, UserInfoUtils>();
             services.AddTransient<ITransactionUtils, TransactionUtils>();
+            services.AddTransient<IStatementUtils, StatementUtils>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
