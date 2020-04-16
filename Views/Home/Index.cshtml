@@ -13,7 +13,7 @@
     <div class="col-12 col-sm-10 offset-sm-1 text-center">
         @if (User.Identity.IsAuthenticated)
         {
-            <h5>Welcome - <i>@User.Identity.Name</i></h5>
+            <h4>Welcome back - <i>@User.Identity.Name</i></h4>
         }
         else
         {
@@ -51,7 +51,7 @@
                 <h4 class="text-center mt-3"><b>Balance Sheet</b></h4>
                 <a class="card-img-top text-center mt-3" asp-controller="Record" asp-action="RecordTransaction"><i class="fas fa-file-alt fa-10x"></i></a>
                 <div class="card-body">
-                    <p class="card-text text-center">Generates a Balance Sheet from Ledger data.</p>
+                    <p class="card-text text-center">Generates a Balance Sheet from Ledger.</p>
                 </div>
             </div>
         </div>
