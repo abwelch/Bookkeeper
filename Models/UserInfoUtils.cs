@@ -12,6 +12,7 @@ namespace Bookkeeper.Models
     {
         public UserInfo GetMostRecentUser();
         public void IncrementTotalTransactions(int UserID);
+        public bool UserAtMaxTransactions(int userID);
     }
 
     public class UserInfoUtils : IUserInfoUtils
@@ -36,6 +37,17 @@ namespace Bookkeeper.Models
             }
             dbContext.UserInfos.Update(user);
             dbContext.SaveChanges();
+        }
+
+        public bool UserAtMaxTransactions(int userID)
+        {
+            string retrieveUser = $"SELECT * FROM [dbo].[UserInfos] WHERE UserID = {userID}";
+            var user = dbConnection.QueryFirstOrDefault<UserInfo>(retrieveUser);
+            if (user.TotalCurrentTransactions >= 150)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
