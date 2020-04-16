@@ -58,6 +58,7 @@ namespace Bookkeeper
             services.AddTransient<IUserInfoUtils, UserInfoUtils>();
             services.AddTransient<ITransactionUtils, TransactionUtils>();
             services.AddTransient<IStatementUtils, StatementUtils>();
+            services.AddTransient<IToolsUtils, ToolsUtils>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

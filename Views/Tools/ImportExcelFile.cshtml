@@ -1,0 +1,49 @@
+﻿@model Bookkeeper.Models.ImportExcel
+
+@{
+    ViewData["Title"] = "Import Excel File";
+}
+
+<div class="row">
+    <div class="col-12 col-sm-10 offset-sm-1 header-wrapper shadow">
+        <h1>Import Excel File</h1>
+    </div>
+</div>
+<br />
+<br />
+<div class="row">
+    <div class="col-12 col-sm-6 offset-sm-3 text-center">
+        <form method="post" enctype="multipart/form-data" asp-controller="Tools" asp-action="ImportExcelFile">
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" asp-for="ExcelFile" class="form-control custom-file-input" />
+                    <label class="custom-file-label">Choose file...</label>
+                </div>
+                <span asp-validation-for="ExcelFile" class="text-danger"></span>
+                <br />
+                <button type="submit" class="btn btn-success mt-4">Import</button>
+            </div>
+
+            @section Scripts
+            {
+                <script>
+                    $(document).ready(function () {
+                        $('.custom-file-input').on("change", function () {
+                            var fileName = $(this).val().split("\\").pop();
+                            $(this).next('.custom-file-label').html(fileName);
+                        });
+                    });
+                </script>
+            }
+        </form>
+        <br />
+        <br />
+        <a download href="C:\Users\Drew\source\repos\Bookkeeper\Views\Tools\TRANSACTION_IMPORT_TEMPLATE.xlsx" target="_blank" class="btn btn-primary">
+            Download Template
+        </a>
+    </div>
+</div>
+
+
+
+
