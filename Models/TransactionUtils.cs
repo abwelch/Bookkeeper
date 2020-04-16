@@ -27,10 +27,12 @@ namespace Bookkeeper.Models
     {
         private readonly BookkeeperContext dbContext;
         private readonly IDbConnection dbConnection;
-        public TransactionUtils(BookkeeperContext _dbContext, IDbConnection _dbConnection)
+        private readonly IUserInfoUtils userInfoUtils;
+        public TransactionUtils(BookkeeperContext _dbContext, IDbConnection _dbConnection, IUserInfoUtils _userInfoUtils)
         {
             dbContext = _dbContext;
             dbConnection = _dbConnection;
+            userInfoUtils = _userInfoUtils;
         }
 
         public bool ValidateTransaction(TransactionViewModel transaction)
@@ -61,6 +63,12 @@ namespace Bookkeeper.Models
             {
                 // Delete transaction in db because deemed easier to delete and recreate instead of update
                 DeleteTransaction(transaction.JournalHeader.TransactionID);
+            }
+
+            // Check that user is not at transaction cap
+            if (userInfoUtils.UserAtMaxTransactions(transaction.UserID))
+            {
+                return -1;
             }
 
             int tranID = -1;
@@ -224,7 +232,7 @@ namespace Bookkeeper.Models
         {
             Dictionary<string, LedgerAccount> accounts = new Dictionary<string, LedgerAccount>();
 
-            string retrieveHeadersForUser = $"SELECT * FROM [Recording].[JournalTransactions] WHERE UserID = {userID} ORDER BY RecordedDateTime DESC";
+            string retrieveHeadersForUser = $"SELECT * FROM [Recording].[JournalTransactions] WHERE UserID = {userID}";
             var headers = dbConnection.Query<JournalTransaction>(retrieveHeadersForUser).ToList();
             if (headers.Count == 0)
             {
