@@ -32,6 +32,7 @@ namespace Bookkeeper.Models
                 { "Installment Loans Payable", BalanceSheetTypes.LongtermLiability },
 
                 { "Common Stock", BalanceSheetTypes.OwnerEquity },
+                { "Preferred Stock", BalanceSheetTypes.OwnerEquity },
                 { "Retained Earnings", BalanceSheetTypes.OwnerEquity },
             };
 
