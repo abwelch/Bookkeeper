@@ -2,10 +2,125 @@
     ViewData["Title"] = "Home Page";
 }
 
-    <div class="text-center">
+
+<div class="row">
+    <div class="col-12 col-sm-10 offset-sm-1 header-wrapper shadow">
+        <h1>Bookkeeper</h1>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-12 col-sm-10 offset-sm-1 text-center">
         @if (User.Identity.IsAuthenticated)
         {
-            <h1 class="display-4">Welcome - @User.Identity.Name</h1>
-
+            <h4>Welcome back - <i>@User.Identity.Name</i></h4>
+        }
+        else
+        {
+            <h5><a asp-controller="Account" asp-action="Register">Register</a> or <a asp-controller="Account" asp-action="Login">Sign In</a> for full functionality</h5>
         }
     </div>
+</div>
+<br />
+<!-- Visible for medium and above -->
+<div class="d-none d-md-block">
+    <div class="row">
+        <div class="col-5 offset-1">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>Record a Transaction</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Recording" asp-action="RecordTransaction"><i class="fas fa-file-signature fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Document a financial event by following double-entry bookkeeping.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>General Ledger</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Record" asp-action="RecordTransaction"><i class="fas fa-book fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Automatically conducts Posting process to provide up-to-date Ledger data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-5 offset-1">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>Balance Sheet</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Record" asp-action="RecordTransaction"><i class="fas fa-file-alt fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Generates a Balance Sheet from Ledger.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>Help</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Home" asp-action="Help"><i class="fas fa-question-circle fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Provides general guidelines and FAQ.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+</div>
+<!-- Visible for extra small and small -->
+<div class="d-md-none">
+    <div class="row">
+        <div class="col-12 col-sm-10 offset-sm-1">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>Record a Transaction</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Recording" asp-action="RecordTransaction"><i class="fas fa-file-signature fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Document a financial event by following double-entry bookkeeping.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-12 col-sm-10 offset-sm-1">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>General Ledger</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Record" asp-action="RecordTransaction"><i class="fas fa-book fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Automatically conducts Posting process to provide up-to-date Ledger data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-12 col-sm-10 offset-sm-1">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>Balance Sheet</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Record" asp-action="RecordTransaction"><i class="fas fa-file-alt fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Generates a Balance Sheet from Ledger data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-12 col-sm-10 offset-sm-1">
+            <div class="card shadow">
+                <h4 class="text-center mt-3"><b>Help</b></h4>
+                <a class="card-img-top text-center mt-3" asp-controller="Home" asp-action="Help"><i class="fas fa-question-circle fa-10x"></i></a>
+                <div class="card-body">
+                    <p class="card-text text-center">Provides general guidelines and FAQ.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+</div>

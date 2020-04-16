@@ -60,3 +60,7 @@ function ClearLineItemAmounts() {
 function SetActionItemIndex(element) {
     element.value = 111; // arbitrarily chosen to avoid tampering
 }
+
+function SetTransactionID(element, transactionID) {
+    element.value = transactionID;
+}

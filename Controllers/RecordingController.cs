@@ -4,6 +4,7 @@ using Bookkeeper.Models;
 using Bookkeeper.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Bookkeeper.Controllers
 {
@@ -12,15 +13,18 @@ namespace Bookkeeper.Controllers
         private readonly BookkeeperContext dbContext;
         private readonly UserManager<IdentityUserExtended> userManager;
         private readonly ITransactionUtils transactionUtils;
+        private readonly IUserInfoUtils userInfoUtils;
         public RecordingController(BookkeeperContext _dbContext, ITransactionUtils _transactionUtils,
-            UserManager<IdentityUserExtended> _userManager)
+            UserManager<IdentityUserExtended> _userManager,
+            IUserInfoUtils _userInfoUtils)
         {
             dbContext = _dbContext;
             transactionUtils = _transactionUtils;
             userManager = _userManager;
+            userInfoUtils = _userInfoUtils;
         }
 
-        public IActionResult Index()
+        public IActionResult Overview()
         {
             return View();
         }
@@ -37,7 +41,7 @@ namespace Bookkeeper.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RecordTransactionAsync(TransactionViewModel journal)
+        public async Task<IActionResult> RecordTransaction(TransactionViewModel journal)
         {
             if (!ModelState.IsValid)
             {
@@ -114,15 +118,19 @@ namespace Bookkeeper.Controllers
                     int transactionID = transactionUtils.CommitTransaction(journal);
                     if (transactionID != -1)
                     {
+                        userInfoUtils.IncrementTotalTransactions(currentUser.UserInfoID);
                         return RedirectToAction("TransactionCommitted", new { tranID = transactionID });
                     }
                     return RedirectToAction("Index", "Home");
                 #endregion [ Commit Transaction ]
+                case JournalAction.EditTransaction:
+                    return View(journal);
                 default:
                     return RedirectToAction("Index", "Home");
             }
         }
 
+        [HttpGet]
         public IActionResult TransactionCommitted(int tranID)
         {
             TransactionSummaryViewModel summary = transactionUtils.RetrieveLastUserCommitSummary(tranID);
@@ -131,6 +139,46 @@ namespace Bookkeeper.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View(summary);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Journal()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return View(null);
+            }
+            IdentityUserExtended currentUser = await userManager.GetUserAsync(User);
+            JournalViewModel journal = transactionUtils.RetrieveAllTransactionsByUser(currentUser.UserInfoID);
+            return View(journal);
+        }
+
+        [HttpPost]
+        public IActionResult Journal(JournalViewModel input)
+        {
+            int validID = input.TransactionIDs.Find(x => x > -1);
+            if (validID != 0)
+            {
+                switch (input.Action)
+                {
+                    case JournalAction.EditTransaction:
+                        TransactionViewModel model = transactionUtils.ConvertToTransactionViewModel(validID);
+                        if (model != null)
+                        {
+                            model.Action = JournalAction.EditTransaction;
+                            return View("RecordTransaction", model);
+                        }
+                        return RedirectToAction("Journal");
+                    case JournalAction.DeleteTransaction:
+                        transactionUtils.DeleteTransaction(validID);
+                        return RedirectToAction("Journal");
+                }
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

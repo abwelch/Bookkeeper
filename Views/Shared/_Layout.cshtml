@@ -27,9 +27,9 @@
                                 Record Keeping
                             </a>
                             <div class="dropdown-menu bg-primary" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Overview</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="Recording" asp-action="Overview">Overview</a>
                                 <a class="dropdown-item text-light bg-primary" asp-controller="Recording" asp-action="RecordTransaction">Record a Transaction</a>
-                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Posting</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="Recording" asp-action="Journal">Journal</a>
                                 <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">General Ledger</a>
                             </div>
                         </li>
@@ -40,18 +40,18 @@
                             <div class="dropdown-menu bg-primary" aria-labelledby="navbarDropdownMenuLink">
                                 <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Overview</a>
                                 <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Balance Sheet</a>
-                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Income Statement</a>
-                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Statement of Cash Flows</a>
+                                @*<a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Income Statement</a>
+                                <a class="dropdown-item text-light bg-primary" asp-controller="" asp-action="">Statement of Cash Flows</a>*@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Help</a>
+                            <a class="nav-link text-light" asp-controller="Home" asp-action="Help">Help</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
+                            <a class="nav-link text-light" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">About</a>
+                            <a class="nav-link text-light" asp-controller="Home" asp-action="About">About</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto">
@@ -75,7 +75,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

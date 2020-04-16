@@ -15,6 +15,7 @@ namespace Bookkeeper.Models
         public DateTime DefaultEntryDate { get; set; }
         public string Action { get; set; }
         public int UserID { get; set; }
+        public bool EditMode { get; set; }
 
         public TransactionViewModel()
         {
@@ -22,6 +23,7 @@ namespace Bookkeeper.Models
             JournalLineItem = new JournalLineItemViewModel();
             PreviousEntries = new List<JournalLineItemViewModel>();
             Action = null;
+            EditMode = false;
         }
     }
 
@@ -29,17 +31,14 @@ namespace Bookkeeper.Models
     {
         [StringLength(350, ErrorMessage = "Memo cannot exceed {1} characters.")]
         public string Memo { get; set; }
+        public int TransactionID { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime RecordedDate { get; set; }
     }
 
     public class JournalLineItemViewModel
     {
         [StringLength(60, ErrorMessage = "Account Name cannot exceed {1} characters.")]
         public string AccountName { get; set; }
-
-        public string AccountType { get; set; }
 
         [DataType(DataType.Currency)]
         [Range(0, 9999999999.99)]
@@ -50,16 +49,5 @@ namespace Bookkeeper.Models
         public decimal? CreditAmount { get; set; }
 
         public int ActionItemIndex { get; set; }
-    }
-
-    public static class JournalAction
-    {
-        public const string AddHeader = "AddHeader";
-        public const string EditHeader = "EditHeader";
-        public const string AddItem = "AddItem";
-        public const string EditItem = "EditItem";
-        public const string CompleteEdit = "CompleteEdit";
-        public const string DeleteItem = "DeleteItem";
-        public const string CommitTransaction = "CommitTransaction";
     }
 }

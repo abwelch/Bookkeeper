@@ -9,9 +9,9 @@
         <h1 class="display-4">Transaction Successfully Committed</h1>
     </div>
 </div>
-
-<div class="row justify-content-center">
-    <div class="col-12">
+<br />
+<div class="row">
+    <div class="col-12 col-sm-10 offset-sm-1">
         <table class="table table-bordered table-hover">
             <thead>
                 <tr class="table-primary">
@@ -28,7 +28,7 @@
                         <label style="font-weight: normal;">@Model.JournalHeader.RecordedDateTime</label>
                     </th>
                     <td>
-                        <label>@Model.JournalHeader.Memo</label>
+                        <label><i>@Model.JournalHeader.Memo</i></label>
                     </td>
                     <td></td>
                     <td></td>
@@ -47,15 +47,16 @@
                         @if (Model.LineItems[i].DebitAmount != null)
                         {
                             <td>
-                                <label style="font-weight: normal;">@Model.LineItems[i].DebitAmount</label>
+                                <label style="font-weight: normal;">$ @(((decimal)Model.LineItems[i].DebitAmount).ToString("#.##"))</label>
                             </td>
+                            <td></td>
                         }
                         else
                         {
                             <td>
                             </td>
                             <td>
-                                <label style="font-weight: normal;">@Model.LineItems[i].CreditAmount</label>
+                                <label style="font-weight: normal;">$ @(((decimal)Model.LineItems[i].CreditAmount).ToString("#.##"))</label>
                             </td>
                         }
                     </tr>
@@ -65,13 +66,18 @@
                     <th scope="row"></th>
                     <td></td>
                     <td>
-                        <label style="font-weight: bolder;">@Model.JournalHeader.TotalAmount</label>
+                        <label style="font-weight: bolder;">$ @Model.JournalHeader.TotalAmount.ToString("#.##")</label>
                     </td>
                     <td>
-                        <label style="font-weight: bolder;">@Model.JournalHeader.TotalAmount</label>
+                        <label style="font-weight: bolder;">$ @Model.JournalHeader.TotalAmount.ToString("#.##")</label>
                     </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 text-center">
+        <a class="btn btn-primary text-center" asp-controller="Recording" asp-action="RecordTransaction">Record Another Transaction</a>
     </div>
 </div>

@@ -10,6 +10,5 @@ namespace Bookkeeper.Models
         public JournalTransaction JournalHeader { get; set; }
 
         public List<JournalEntry> LineItems { get; set; }
-
     }
 }
