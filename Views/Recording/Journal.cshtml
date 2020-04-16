@@ -1,0 +1,126 @@
+﻿@model Bookkeeper.Models.JournalViewModel
+
+@{
+    ViewData["Title"] = "Journal";
+}
+
+<div class="row">
+    <div class="col-12 col-sm-10  offset-sm-1 header-wrapper shadow">
+        <h1>Journal</h1>
+    </div>
+</div>
+<br />
+@if (Model == null)
+{
+    <div class="row">
+        <div class="col-12 text-center">
+            <p class="text-danger">
+                You are not logged in and therefore do not have any entries to view.
+            </p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-12 col-sm-10 offset-sm-1">
+            <h5 class="text-center">Total Transactions: @Model.Transactions.Count</h5>
+            <form asp-controller="Recording" asp-action="Journal" method="post">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr class="table-primary">
+                            <th scope="col">Date & Time</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Debit</th>
+                            <th scope="col">Credit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Transactions.Count; ++i)
+                        {
+                            <!-- Display Journal Header -->
+                            <tr>
+                                <th scope="row">
+                                    <label style="font-weight: normal;">@Model.Transactions[i].JournalHeader.RecordedDateTime</label>
+                                </th>
+                                <td>
+                                    <label><i>@Model.Transactions[i].JournalHeader.Memo</i></label>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                            <!-- Display Journal line items for specific transaction -->
+                            @for (int j = 0; j < Model.Transactions[i].LineItems.Count; ++j)
+                            {
+                                <tr>
+                                    <th scope="row">
+                                    </th>
+                                    <td>
+                                        <label style="font-weight: normal;">@Model.Transactions[i].LineItems[j].AccountName</label>
+                                    </td>
+                                    <!-- Determine positioning of amount in row -->
+                                    @if (Model.Transactions[i].LineItems[j].DebitAmount != null)
+                                    {
+                                        <td>
+                                            <label style="font-weight: normal;">$ @(((decimal)Model.Transactions[i].LineItems[j].DebitAmount).ToString("#.##"))</label>
+                                        </td>
+                                        <td></td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                        <td>
+                                            <label style="font-weight: normal;">$ @(((decimal)Model.Transactions[i].LineItems[j].CreditAmount).ToString("#.##"))</label>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                            <!-- Display totals for specific transaction -->
+                            <tr>
+                                <th scope="row"></th>
+                                <td></td>
+                                <td>
+                                    <label style="font-weight: bold;">$ @Model.Transactions[i].JournalHeader.TotalAmount.ToString("#.##")</label>
+                                </td>
+                                <td>
+                                    <label style="font-weight: bold;">$ @Model.Transactions[i].JournalHeader.TotalAmount.ToString("#.##")</label>
+                                </td>
+                            </tr>
+                            <tr class="table-secondary">
+                                <td>
+                                    <button type="submit" aria-label="Edit" name="Action" value="@JournalAction.EditTransaction" class="btn mb-1" data-toggle="tooltip" data-placement="right" title="Edit" onclick="SetTransactionID(document.getElementById(@i.ToString()), @Model.Transactions[i].JournalHeader.TransactionId.ToString())">
+                                        <i class="fas fa-edit fa-lg"></i>
+                                    </button>
+                                    <button type="submit" aria-label="Delete" name="Action" value="@JournalAction.DeleteTransaction" class="btn" data-toggle="tooltip" data-placement="right" title="Delete" onclick="SetTransactionID(document.getElementById(@i.ToString()), @Model.Transactions[i].JournalHeader.TransactionId.ToString())">
+                                        <i class="fas fa-trash fa-lg"></i>
+                                    </button>
+                                    <input type="hidden" id="@i.ToString()" asp-for="TransactionIDs[i]" value="-1" class="form-control" readonly />
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                        <!-- Display grand totals -->
+                        <tr class="table-success">
+                            <th scope="row"></th>
+                            <td><b>Grand Totals</b></td>
+                            <td>
+                                <label style="font-weight: bolder;">$ @Model.GrandTotal.ToString("#.##")</label>
+                            </td>
+                            <td>
+                                <label style="font-weight: bolder;">$ @Model.GrandTotal.ToString("#.##")</label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+}
+
