@@ -178,7 +178,7 @@
 
                             }
                         }
-                        @if (Model.Action != JournalAction.EditHeader && Model.Action != JournalAction.EditItem)
+                        @if (Model.Action != JournalAction.EditHeader && Model.Action != JournalAction.EditItem && Model.PreviousEntries.Count < 20)
                         {
                             <!-- Input Journal line item -->
                             <tr>
