@@ -56,12 +56,12 @@ else
                         {
                             <tr>
                                 <td>@account.Key</td>
-                                <td>$ @account.Value.ToString("#.##")</td>
+                                <td>@account.Value.ToString("C")</td>
                             </tr>
                         }
                         <tr>
                             <td><b>Total Current Assets:</b></td>
-                            <td><b>$ @Model.TotalCurrentAssets.ToString("#.##")</b></td>
+                            <td><b>@Model.TotalCurrentAssets.ToString("C")</b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -84,12 +84,12 @@ else
                         {
                             <tr>
                                 <td>@account.Key</td>
-                                <td>$ @account.Value.ToString("#.##")</td>
+                                <td>@account.Value.ToString("C")</td>
                             </tr>
                         }
                         <tr>
                             <td><b>Total @BalanceSheetTypes.PPE:</b></td>
-                            <td><b>$ @Model.TotalPPE.ToString("#.##")</b></td>
+                            <td><b>@Model.TotalPPE.ToString("C")</b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -121,12 +121,12 @@ else
                         {
                             <tr>
                                 <td>@account.Key</td>
-                                <td>$ @account.Value.ToString("#.##")</td>
+                                <td>@account.Value.ToString("C")</td>
                             </tr>
                         }
                         <tr>
                             <td><b>Total Current Liabilities:</b></td>
-                            <td><b>$ @Model.TotalCurrentLiabilities.ToString("#.##")</b></td>
+                            <td><b>@Model.TotalCurrentLiabilities.ToString("C")</b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -149,12 +149,12 @@ else
                         {
                             <tr>
                                 <td>@account.Key</td>
-                                <td>$ @account.Value.ToString("#.##")</td>
+                                <td>@account.Value.ToString("C")</td>
                             </tr>
                         }
                         <tr>
                             <td><b>Total Long-term Liabilities:</b></td>
-                            <td><b>$ @Model.TotalLongtermLiabilities.ToString("#.##")</b></td>
+                            <td><b>@Model.TotalLongtermLiabilities.ToString("C")</b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -178,12 +178,12 @@ else
                         {
                             <tr>
                                 <td>@account.Key</td>
-                                <td>$ @account.Value.ToString("#.##")</td>
+                                <td>@account.Value.ToString("C")</td>
                             </tr>
                         }
                         <tr>
                             <td><b>Total @BalanceSheetTypes.OwnerEquity:</b></td>
-                            <td><b>$ @Model.TotalStockHolderEquity.ToString("#.##")</b></td>
+                            <td><b>@Model.TotalStockHolderEquity.ToString("C")</b></td>
                         </tr>
                     </tbody>
                 </table>
