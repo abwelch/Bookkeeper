@@ -1,0 +1,197 @@
+﻿@model Bookkeeper.Models.BalanceSheetViewModel
+
+@{
+    ViewData["Title"] = "Balance Sheet";
+}
+
+<div class="row">
+    <div class="col-12 col-sm-10 offset-sm-1 header-wrapper shadow">
+        <h1>Balance Sheet as of @DateTime.Now.Date.ToShortDateString()</h1>
+    </div>
+</div>
+<br />
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5 class="text-danger">
+                You are not logged in and therefore do not have any entries to view.
+            </h5>
+        </div>
+    </div>
+}
+else if (Model == null)
+{
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5 class="text-danger">
+                There are no committed transactions to generate a Balance Sheet from.
+            </h5>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Assets -->
+    @if (Model.CurrentAssets.Count > 0 || Model.PropertyPlantEquipment.Count > 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1 text-center">
+                <h3>ASSETS</h3>
+            </div>
+        </div>
+    }
+    @if (Model.CurrentAssets.Count > 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="table-primary"><h5>Current Assets</h5></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var account in Model.CurrentAssets)
+                        {
+                            <tr>
+                                <td>@account.Key</td>
+                                <td>$ @account.Value.ToString("#.##")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><b>Total Current Assets:</b></td>
+                            <td><b>$ @Model.TotalCurrentAssets.ToString("#.##")</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br />
+    }
+    @if (Model.PropertyPlantEquipment.Count > 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="table-primary"><h5>@BalanceSheetTypes.PPE</h5></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var account in Model.PropertyPlantEquipment)
+                        {
+                            <tr>
+                                <td>@account.Key</td>
+                                <td>$ @account.Value.ToString("#.##")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><b>Total @BalanceSheetTypes.PPE:</b></td>
+                            <td><b>$ @Model.TotalPPE.ToString("#.##")</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br />
+    }
+    <!-- Liabilities -->
+    @if (Model.CurrentLiabilities.Count > 0 || Model.LongtermLiabilities.Count > 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1 text-center">
+                <h3>LIABILITIES</h3>
+            </div>
+        </div>
+    }
+    @if (Model.CurrentLiabilities.Count > 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="table-primary"><h5>Current Liabilities</h5></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var account in Model.CurrentLiabilities)
+                        {
+                            <tr>
+                                <td>@account.Key</td>
+                                <td>$ @account.Value.ToString("#.##")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><b>Total Current Liabilities:</b></td>
+                            <td><b>$ @Model.TotalCurrentLiabilities.ToString("#.##")</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br />
+    }
+    @if (Model.LongtermLiabilities.Count > 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="table-primary"><h5>Long-term Liabilities</h5></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var account in Model.LongtermLiabilities)
+                        {
+                            <tr>
+                                <td>@account.Key</td>
+                                <td>$ @account.Value.ToString("#.##")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><b>Total Long-term Liabilities:</b></td>
+                            <td><b>$ @Model.TotalLongtermLiabilities.ToString("#.##")</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br />
+    }
+    <!-- Owner's Equity -->
+    @if (Model.StockHolderEquity.Count > 0)
+    {
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1 text-center">
+                <h3>OWNER'S EQUITY</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm-10 offset-sm-1">
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                        @foreach (var account in Model.StockHolderEquity)
+                        {
+                            <tr>
+                                <td>@account.Key</td>
+                                <td>$ @account.Value.ToString("#.##")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><b>Total @BalanceSheetTypes.OwnerEquity:</b></td>
+                            <td><b>$ @Model.TotalStockHolderEquity.ToString("#.##")</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    <br />
+    <br />
+    <br />
+    <br />
+}
