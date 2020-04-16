@@ -73,7 +73,7 @@ else
                                     @if (Model.Transactions[i].LineItems[j].DebitAmount != null)
                                     {
                                         <td>
-                                            <label style="font-weight: normal;">$ @(((decimal)Model.Transactions[i].LineItems[j].DebitAmount).ToString("#.##"))</label>
+                                            <label style="font-weight: normal;">@(((decimal)Model.Transactions[i].LineItems[j].DebitAmount).ToString("C"))</label>
                                         </td>
                                         <td></td>
                                     }
@@ -81,7 +81,7 @@ else
                                     {
                                         <td></td>
                                         <td>
-                                            <label style="font-weight: normal;">$ @(((decimal)Model.Transactions[i].LineItems[j].CreditAmount).ToString("#.##"))</label>
+                                            <label style="font-weight: normal;">@(((decimal)Model.Transactions[i].LineItems[j].CreditAmount).ToString("C"))</label>
                                         </td>
                                     }
                                 </tr>
@@ -91,10 +91,10 @@ else
                                 <th scope="row"></th>
                                 <td></td>
                                 <td>
-                                    <label style="font-weight: bold;">$ @Model.Transactions[i].JournalHeader.TotalAmount.ToString("#.##")</label>
+                                    <label style="font-weight: bold;">@Model.Transactions[i].JournalHeader.TotalAmount.ToString("C")</label>
                                 </td>
                                 <td>
-                                    <label style="font-weight: bold;">$ @Model.Transactions[i].JournalHeader.TotalAmount.ToString("#.##")</label>
+                                    <label style="font-weight: bold;">@Model.Transactions[i].JournalHeader.TotalAmount.ToString("C")</label>
                                 </td>
                             </tr>
                             <tr class="table-secondary">
@@ -117,10 +117,10 @@ else
                             <th scope="row"></th>
                             <td><b>Grand Totals</b></td>
                             <td>
-                                <label style="font-weight: bolder;">$ @Model.GrandTotal.ToString("#.##")</label>
+                                <label style="font-weight: bolder;">@Model.GrandTotal.ToString("C")</label>
                             </td>
                             <td>
-                                <label style="font-weight: bolder;">$ @Model.GrandTotal.ToString("#.##")</label>
+                                <label style="font-weight: bolder;">@Model.GrandTotal.ToString("C")</label>
                             </td>
                         </tr>
                     </tbody>

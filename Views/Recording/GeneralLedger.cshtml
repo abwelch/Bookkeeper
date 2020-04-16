@@ -53,13 +53,13 @@ else
                         {
                             @if (account.Value.Amount > 0)
                             {
-                                <td>$ @(account.Value.Amount.ToString("#.##"))</td>
+                                <td>@(account.Value.Amount.ToString("C"))</td>
                                 <td></td>
                             }
                             else
                             {
                                 <td></td>
-                                <td class="text-danger">$ @((account.Value.Amount * -1).ToString("#.##"))</td>
+                                <td class="text-danger">@((account.Value.Amount * -1).ToString("C"))</td>
                             }
                         }
                         else
@@ -67,11 +67,11 @@ else
                             @if (account.Value.Amount > 0)
                             {
                                 <td></td>
-                                <td>$ @(account.Value.Amount.ToString("#.##"))</td>
+                                <td>@(account.Value.Amount.ToString("C"))</td>
                             }
                             else
                             {
-                                <td class="text-danger">$ @((account.Value.Amount * -1).ToString("#.##"))</td>
+                                <td class="text-danger">@((account.Value.Amount * -1).ToString("C"))</td>
                                 <td></td>
                             }
                         }

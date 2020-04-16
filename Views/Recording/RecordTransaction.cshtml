@@ -8,7 +8,14 @@
 
 <div class="row">
     <div class="col-12 col-sm-10  offset-sm-1 header-wrapper shadow">
-        <h1>Record a Transaction</h1>
+        @if (Model.EditMode)
+        {
+            <h1>Update a Transaction</h1>
+        }
+        else
+        {
+            <h1>Record a Transaction</h1>
+        }
     </div>
 </div>
 <div class="row">
@@ -150,7 +157,7 @@
                                         {
                                             <td>
                                                 <input type="hidden" asp-for="PreviousEntries[i].DebitAmount" value="@Model.PreviousEntries[i].DebitAmount" class="form-control" readonly />
-                                                <label style="font-weight: normal;">$ @(((decimal)Model.PreviousEntries[i].DebitAmount).ToString("#.##"))</label>
+                                                <label style="font-weight: normal;">@(((decimal)Model.PreviousEntries[i].DebitAmount).ToString("C"))</label>
                                             </td>
                                             <td>
                                             </td>
@@ -161,7 +168,7 @@
                                             </td>
                                             <td>
                                                 <input type="hidden" asp-for="PreviousEntries[i].CreditAmount" value="@Model.PreviousEntries[i].CreditAmount" class="form-control" readonly />
-                                                <label style="font-weight: normal;">$ @(((decimal)Model.PreviousEntries[i].CreditAmount).ToString("#.##"))</label>
+                                                <label style="font-weight: normal;">@(((decimal)Model.PreviousEntries[i].CreditAmount).ToString("C"))</label>
                                             </td>
                                         }
                                         <td class="table-secondary row-actions" scope="row">
