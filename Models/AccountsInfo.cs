@@ -81,6 +81,8 @@ namespace Bookkeeper.Models
                 "Salaries",
                 "Utilities"
             };
+
+            AccountNames.Sort();
         }
     }
 }
