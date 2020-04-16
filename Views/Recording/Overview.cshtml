@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewData["Title"] = "Record Keeping Overview";
+}
+
+<div class="row">
+    <div class="col-12 col-sm-10 offset-sm-1 header-wrapper shadow">
+        <h1>Record Keeping Overview</h1>
+    </div>
+</div>
+<br />
+<br />
+<div class="row">
+    <div class="col-12 col-sm-10  offset-sm-1 text-section shadow">
+        <article>
+            <section>
+                <h3 class="text-center"><u>Record a Transaction</u></h3>
+                <p>
+                    This module is the main driver of data creation within the application. On this page, users record transactions by adhering to
+                    double-entry bookkeeping standards.
+                    <br /> 
+                    <br />
+                    <b>Important Notes:</b>
+                    <ul>
+                        <li>
+                            Unregistered users are permitted to create entries, but will be unable to commit the transaction.
+                        </li>
+                        <li>
+                            A transaction will be ineligble to commit until debit/credit balances are equal.
+                        </li>
+                    </ul>
+                </p>
+            </section>
+            <br />
+            <section>
+                <h3 class="text-center"><u>Journal</u></h3>
+                <p>
+                    The Journal module displays all transactions committed by the user in standard journal format. Options are 
+                    available for deleting and editing committed transactions.
+                </p>
+            </section>
+            <br />
+            <section>
+                <h3 class="text-center"><u>General Ledger</u></h3>
+                <p>
+                    The General Ledger module automatically conducts the Posting process from data within the Journal.
+                </p>
+            </section>
+        </article>
+    </div>
+</div>
+
