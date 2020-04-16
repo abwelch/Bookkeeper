@@ -1,0 +1,85 @@
+﻿@model Bookkeeper.Models.GeneralLedgerViewModel
+
+@{
+    ViewData["Title"] = "General Ledger";
+}
+
+<div class="row">
+    <div class="col-12 col-sm-10 offset-sm-1 header-wrapper shadow">
+        <h1>General Ledger</h1>
+    </div>
+</div>
+<br />
+@if (Model == null)
+{
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5 class="text-danger">
+                You are not logged in and therefore do not have any entries to view.
+            </h5>
+        </div>
+    </div>
+}
+else if (Model.AllAccounts.Count == 0)
+{
+    <div class="row">
+        <div class="col-12 text-center">
+            <h5 class="text-danger">
+                There are no committed transactions to generate a General Ledger from.
+            </h5>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-12 col-sm-10 offset-sm-1">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Account Name</th>
+                        <th scope="col">Account Type</th>
+                        <th scope="col">Debit</th>
+                        <th scope="col">Credit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var account in Model.AllAccounts)
+                    {
+                    <tr>
+                        <td>@account.Key</td>
+                        <td>@account.Value.AccountType</td>
+                        @if (account.Value.IsDebit)
+                        {
+                            @if (account.Value.Amount > 0)
+                            {
+                                <td>$ @(account.Value.Amount.ToString("#.##"))</td>
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td class="text-danger">$ @((account.Value.Amount * -1).ToString("#.##"))</td>
+                            }
+                        }
+                        else
+                        {
+                            @if (account.Value.Amount > 0)
+                            {
+                                <td></td>
+                                <td>$ @(account.Value.Amount.ToString("#.##"))</td>
+                            }
+                            else
+                            {
+                                <td class="text-danger">$ @((account.Value.Amount * -1).ToString("#.##"))</td>
+                                <td></td>
+                            }
+                        }
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
