@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using Bookkeeper;
@@ -19,6 +20,7 @@ namespace Bookkeeper.Models
         JournalViewModel RetrieveAllTransactionsByUser(int userID);
         TransactionViewModel ConvertToTransactionViewModel(int transactionID);
         void DeleteTransaction(int transactionID);
+        Dictionary<string, LedgerAccount> Post(int userID);
     }
 
     public class TransactionUtils : ITransactionUtils
@@ -216,6 +218,67 @@ namespace Bookkeeper.Models
             string deleteTransaction = $"DELETE FROM [Recording].[JournalTransactions] WHERE TransactionID = {transactionID}";
             dbConnection.Execute(deleteTransaction);
             dbConnection.Close();
+        }
+
+        public Dictionary<string, LedgerAccount> Post(int userID)
+        {
+            Dictionary<string, LedgerAccount> accounts = new Dictionary<string, LedgerAccount>();
+
+            string retrieveHeadersForUser = $"SELECT * FROM [Recording].[JournalTransactions] WHERE UserID = {userID} ORDER BY RecordedDateTime DESC";
+            var headers = dbConnection.Query<JournalTransaction>(retrieveHeadersForUser).ToList();
+            if (headers.Count == 0)
+            {
+                return accounts;
+            }
+
+            // Build set of transactionIDs
+            StringBuilder setOfIDs = new StringBuilder();
+            for (int i = 0; i < headers.Count; i++)
+            {
+                if (i == headers.Count-1)
+                {
+                    setOfIDs.Append(headers[i].TransactionId);
+                }
+                else
+                {
+                    setOfIDs.Append(headers[i].TransactionId);
+                    setOfIDs.Append(",");
+                }
+            }
+
+            string retrieveAllLineItems = $"SELECT * FROM [Recording].[JournalEntries] WHERE ParentTransactionID IN ({setOfIDs})";
+            var lineItems = dbConnection.Query<JournalEntry>(retrieveAllLineItems).ToList();
+
+            foreach (JournalEntry item in lineItems)
+            {
+                if (accounts.ContainsKey(item.AccountName))
+                {
+                    if (accounts[item.AccountName].IsDebit)
+                    {
+                        accounts[item.AccountName].Amount += (item.DebitAmount != null) ? (decimal)item.DebitAmount : ((decimal)item.CreditAmount * -1);
+                    }
+                    else
+                    {
+                        accounts[item.AccountName].Amount += (item.DebitAmount != null) ? ((decimal)item.DebitAmount * -1) : (decimal)item.CreditAmount;
+                    }
+                }
+                else
+                {
+                    LedgerAccount newAccount = new LedgerAccount();
+                    newAccount.IsDebit = item.DebitBalance;
+                    newAccount.AccountType = AccountsInfo.AccountTypes[item.AccountName];
+                    if (item.DebitBalance)
+                    {
+                        newAccount.Amount = (item.DebitAmount != null) ? (decimal)item.DebitAmount : ((decimal)item.CreditAmount * -1); 
+                    }
+                    else
+                    {
+                        newAccount.Amount = (item.DebitAmount != null) ? ((decimal)item.DebitAmount * -1) : (decimal)item.CreditAmount;
+                    }
+                    accounts.Add(item.AccountName, newAccount);
+                }
+            }
+            return accounts;
         }
     }
 }
