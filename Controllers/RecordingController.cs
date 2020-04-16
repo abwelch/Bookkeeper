@@ -180,5 +180,19 @@ namespace Bookkeeper.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
+        public async Task<IActionResult> GeneralLedger()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return View(null);
+            }
+            IdentityUserExtended currentUser = await userManager.GetUserAsync(User);
+            GeneralLedgerViewModel accounts = new GeneralLedgerViewModel()
+            {
+                AllAccounts = transactionUtils.Post(currentUser.UserInfoID)
+            };
+            return View(accounts);
+        }
     }
 }
