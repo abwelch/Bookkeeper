@@ -3,16 +3,16 @@
 @model Bookkeeper.Models.TransactionViewModel
 
 @{
-    ViewData["Title"] = "Recording Keeping - Journal";
+    ViewData["Title"] = "Record a Transaction";
 }
 
 <div class="row">
-    <div class="col-10 offset-1 header-wrapper shadow">
+    <div class="col-12 col-sm-10  offset-sm-1 header-wrapper shadow">
         <h1>Record a Transaction</h1>
     </div>
 </div>
 <div class="row">
-    <div class="col-10 offset-1 text-center">
+    <div class="col-12 col-sm-10  offset-sm-1 text-center">
         @if (!User.Identity.IsAuthenticated)
         {
             <p class="text-danger">Warning: You are not logged in and will be unable to commit transactions</p>
@@ -89,7 +89,7 @@
                                 </th>
                                 <td>
                                     <input type="hidden" asp-for="JournalHeader.Memo" value="@Model.JournalHeader.Memo" class="form-control" style="font-style:italic" readonly />
-                                    <label>@Model.JournalHeader.Memo</label>
+                                    <label><i>@Model.JournalHeader.Memo</i></label>
                                 </td>
                                 <td></td>
                                 <td></td>
@@ -150,7 +150,7 @@
                                         {
                                             <td>
                                                 <input type="hidden" asp-for="PreviousEntries[i].DebitAmount" value="@Model.PreviousEntries[i].DebitAmount" class="form-control" readonly />
-                                                <label style="font-weight: normal;">@Model.PreviousEntries[i].DebitAmount</label>
+                                                <label style="font-weight: normal;">$ @(((decimal)Model.PreviousEntries[i].DebitAmount).ToString("#.##"))</label>
                                             </td>
                                             <td>
                                             </td>
@@ -161,7 +161,7 @@
                                             </td>
                                             <td>
                                                 <input type="hidden" asp-for="PreviousEntries[i].CreditAmount" value="@Model.PreviousEntries[i].CreditAmount" class="form-control" readonly />
-                                                <label style="font-weight: normal;">@Model.PreviousEntries[i].CreditAmount</label>
+                                                <label style="font-weight: normal;">$ @(((decimal)Model.PreviousEntries[i].CreditAmount).ToString("#.##"))</label>
                                             </td>
                                         }
                                         <td class="table-secondary row-actions" scope="row">
@@ -220,11 +220,20 @@
             </table>
         </div>
     </div>
-    @if (Utilities.ValidateTransaction(Model) && User.Identity.IsAuthenticated)
+    @if (Model.EditMode)
     {
         <div class="row">
             <div class="col text-center">
-                <button type="submit" name="Action" value="@JournalAction.CommitTransaction" class="btn-lg btn-primary">Commit Transaction</button>
+                @if (Utilities.ValidateTransaction(Model) && User.Identity.IsAuthenticated)
+                {
+                    <button type="submit" name="Action" value="@JournalAction.CommitTransaction" class="btn-lg btn-primary">Update Transaction</button>
+                }
+                else
+                {
+                    <button type="button" class="btn-lg btn-secondary" disabled>Update Transaction</button>
+                }
+                <input type="hidden" asp-for="EditMode" value="true" readonly />
+                <input type="hidden" asp-for="JournalHeader.TransactionID" value="@Model.JournalHeader.TransactionID" readonly />
             </div>
         </div>
     }
@@ -232,11 +241,22 @@
     {
         <div class="row">
             <div class="col text-center">
-                <button type="button" name="TransactionFinished" value="true" class="btn-lg btn-secondary" disabled>Commit Transaction</button>
+                @if (Utilities.ValidateTransaction(Model) && User.Identity.IsAuthenticated)
+                {
+                    <button type="submit" name="Action" value="@JournalAction.CommitTransaction" class="btn-lg btn-primary">Commit Transaction</button>
+                }
+                else
+                {
+                    <button type="button" class="btn-lg btn-secondary" disabled>Commit Transaction</button>
+                }
             </div>
         </div>
     }
 </form>
+<br />
+<br />
+<br />
+<br />
 
 <script src="~/js/site.js"></script>
 
